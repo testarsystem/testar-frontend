@@ -8,10 +8,10 @@
 export default {
   name: 'Alert',
   props: {
-      type: {
-          type: String,
-          default: "success"
-      }   
+    type: {
+        type: String,
+        default: 'success'
+    }   
   }
 }
 </script>
@@ -21,8 +21,7 @@ export default {
     padding: .75rem 1.25rem;
     margin-bottom: 1rem;
     border: 1px solid transparent;
-    border-radius: 2px;
-    
+    border-radius: 2px;   
 }
 .success {
     color: #155724;
@@ -40,3 +39,4 @@ export default {
     border-color: #ffeeba;
 }
 </style>
+
