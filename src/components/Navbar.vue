@@ -2,7 +2,7 @@
     <div class="navbar">
         <nav>
             <div class="nav-wrapper">
-                <a href="#!" class="brand-logo center">{{title}}</a>
+                <router-link to="/" class="brand-logo center">{{title}}</router-link>
                 <ul class="left">
                     <li><a href="#" @click="openSidenav" ><i class="material-icons">menu</i></a></li>
                 </ul>
@@ -17,7 +17,7 @@
                 </div>
             </li>
             <hr class="list-divider">
-            <li><a href="#">First Link</a></li>
+            <li><a @click="goToTests">Tests</a></li>
             <li><a href="#">Second Link</a></li>
             <li><a href="#">Third Link</a></li>
         </ul>
@@ -37,6 +37,15 @@ export default {
         openSidenav() {
             var instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
             instance.open()
+        },
+        closeSidenav() {
+            var instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
+            instance.close()            
+        },
+        goToTests()
+        {
+            this.closeSidenav();
+            this.$router.push('tests')
         }
     }
 }
@@ -57,5 +66,8 @@ export default {
     font-size: 3rem;
     position: relative;
     top: .5rem;
+}
+.sidenav a {
+    cursor: pointer;
 }
 </style>

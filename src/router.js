@@ -22,6 +22,11 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: () => import('./views/Account/Register.vue')
+    },
+    {
+      path: '/tests',
+      name: 'tests',
+      component: () => import('./views/Tests/Tests.vue')
     }
   ]
 })

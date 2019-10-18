@@ -1,8 +1,27 @@
 <template>
   <div id="app">
+    <Navbar title="Testar" v-if="showMenu" />
     <router-view/>
   </div>
 </template>
+
+<script>
+import Navbar from '@/components/Navbar.vue'
+export default {
+  components: {
+    Navbar
+  },
+  computed: {
+    showMenu() {
+      return this.$route.name !== 'login' && this.$route.name !== 'register';
+    }
+  },
+  mounted(){
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems);
+  }
+}
+</script>
 
 <style>
 :root{
