@@ -1,7 +1,7 @@
 <template>
     <div class="login row">
         <h3>Вход</h3>
-        <div class="col m6 l3 s8 offset-m3 offset-s2" id="loginForm">
+        <div class="col" id="loginForm">
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12">
@@ -79,14 +79,19 @@ export default {
     padding-bottom: 1.2rem;
 }
 
-@media screen and (min-width: 992px){
-    #loginForm {
-        margin-left: 37.5%;
-    }
-}
-
 #loginFormBtn
 {
     margin: 1.2rem auto;
+}
+.login {
+    min-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login.row {
+    margin-bottom: 0!important;
 }
 </style>
