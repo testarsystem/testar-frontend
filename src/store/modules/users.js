@@ -13,16 +13,12 @@ const actions ={
                 localStorage.setItem('token', token);  
                 commit('setUser', response.data); 
             } else {
-                throw new Error("Неверный логин или пароль");
+                throw new Error("There were problems signing in to your account.");
             }
         }
         catch(err) {
             localStorage.removeItem('token');
-            if(err.status == "404"){
-                throw new Error("Неверный логин или пароль");
-            }
-            else
-                throw(err);
+            throw(err);
         }
     },
     async registerUser({commit},authData){
@@ -33,7 +29,7 @@ const actions ={
                 localStorage.setItem('token', token);
                 commit('setUser', response.data.user);
             } else {
-                throw(err);
+                throw(new Error("There were problems creating your account."));
             }
         }
         catch(err) {

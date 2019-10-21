@@ -31,7 +31,7 @@ baseInstance.interceptors.response.use( response => {
     //     router.replace('/servererror');
     //   }
     if(error.response)
-      return Promise.reject(error.response);
+      return Promise.reject(error.response.data);
     else
       return Promise.reject(error);
 });

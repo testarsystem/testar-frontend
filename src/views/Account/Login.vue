@@ -1,23 +1,23 @@
 <template>
     <div class="login row">
-        <h3>Вход</h3>
+        <h3>Sign in</h3>
         <div class="col" id="loginForm">
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12">
                     <input id="username" type="text" class="validate" v-model="authData.testar" @keyup="usernameKeyUpHandler($event)">
-                    <label for="username">Логин или email</label>
+                    <label for="username">Login or email</label>
                 </div>
                 <div class="input-field col s12">
                     <input id="password" type="password" class="validate" v-model="authData.password" ref="passwordInput" @keyup="passwordKeyUpHandler($event)">
-                    <label for="password">Пароль</label>
+                    <label for="password">Password</label>
                 </div>
             </div>
             <div class="row">
-                <button class="waves-effect waves-light btn" id="loginFormBtn" @click="loginClickHandler">Войти</button>
+                <button class="waves-effect waves-light btn" id="loginFormBtn" @click="loginClickHandler">Sign in</button>
             </div>
             <div class="row">
-                <p>Нет учетной записи? <router-link to="register">Зарегистрироваться</router-link></p>
+                <p>Don't have an account? <router-link to="register">Register</router-link></p>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@ export default {
             this.authData.testar = this.authData.testar.trim();
             if (this.authData.testar.length < 1 || this.authData.password.length < 1)
             {
-                this.error = "Пустые поля!";
+                this.error = "Empty fields!";
                 this.authData.password = '';
             }
             else{

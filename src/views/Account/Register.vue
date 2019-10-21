@@ -1,6 +1,6 @@
 <template>
     <div class="register row">
-        <h3>Регистрация</h3>
+        <h3>Registration</h3>
         <div class="col m6 l6 s8 offset-m3 offset-l3 offset-s2" id="registerForm">
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
@@ -10,27 +10,27 @@
                 </div>
                 <div class="input-field col s12 l6">
                     <input id="username" type="text" class="validate" v-model="authData.username">
-                    <label for="username">Логин</label>
+                    <label for="username">Login</label>
                 </div>
                 <div class="input-field col s12 l6">
                     <input id="firstName" type="text" class="validate" v-model="authData.first_name">
-                    <label for="firstName">Имя</label>
+                    <label for="firstName">Name</label>
                 </div>
                 <div class="input-field col s12 l6">
                     <input id="lastName" type="text" class="validate" v-model="authData.last_name">
-                    <label for="lastName">Фамилия</label>
+                    <label for="lastName">Surname</label>
                 </div>
                 <div class="input-field col s12 l6">
                     <input id="password" type="password" class="validate" :class="{invalid : isPasswordsMatch == false}" v-model="authData.password">
-                    <label for="password">Пароль</label>
+                    <label for="password">Password</label>
                 </div>
                 <div class="input-field col s12 l6">
                     <input id="passwordConfirm" type="password" class="validate" :class="{invalid : isPasswordsMatch == false}" v-model="passwordConfirm" @blur="comparePasswords">
-                    <label for="passwordConfirm">Подтвердите пароль</label>
+                    <label for="passwordConfirm">Confirm password</label>
                 </div>
             </div>
             <div class="row">
-                <button class="waves-effect waves-light btn" id="registerFormBtn" @click="registerClickHandler">Зарегистрироваться</button>
+                <button class="waves-effect waves-light btn" id="registerFormBtn" @click="registerClickHandler">Register</button>
             </div>
         </div>
     </div>
@@ -73,12 +73,12 @@ export default {
                 this.passwordConfirm < 1 || this.authData.username < 1 || 
                 this.authData.first_name < 1 || this.authData.last_name < 1)
             {
-                this.error = "Пустые поля!";
+                this.error = "Empty fields!";
                 this.authData.password = '';
                 this.passwordConfirm = '';
             }
             else if(!this.isPasswordsMatch){
-                this.error = "Пароли не совпадают!";
+                this.error = "Passwords don't match!";
                 this.authData.password = '';
                 this.passwordConfirm = '';
             }           
