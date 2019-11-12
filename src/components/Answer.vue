@@ -2,7 +2,7 @@
     <div class="answer">      
         <input placeholder="option" type="text" v-model="value.text" :disabled="!enableEdit">
         <label>
-            <input type="checkbox" v-model="value.checked"/><span></span>
+            <input type="checkbox" v-model="value.correct"/><span></span>
         </label>
         <i 
             class="material-icons" @click="deleteAnswer" 

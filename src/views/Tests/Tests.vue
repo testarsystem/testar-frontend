@@ -21,13 +21,13 @@ export default {
           id: 1,
           title: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quae quas, fugiat eos fugit maiores porro temporibus atque mollitia?',
           description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non distinctio aliquid temporibus suscipit consequuntur, eius excepturi nam numquam voluptatem ex fugiat reiciendis velit blanditiis labore quas! Quibusdam, porro. Dolor harum et veniam aspernatur, facere eaque eveniet nemo dolore similique optio? Quae quas, fugiat eos fugit maiores porro temporibus atque mollitia?',
-          date: '01/01/2019'
+          created: '01/01/2019'
         },
         {
           id: 2,
           title: 'My first test',
           description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non distinctio aliquid temporibus suscipit consequuntur, eius excepturi nam numquam voluptatem ex fugiat reiciendis velit blanditiis labore quas! Quibusdam, porro. Dolor harum et veniam aspernatur, facere eaque eveniet nemo dolore similique optio? Quae quas, fugiat eos fugit maiores porro temporibus atque mollitia?',
-          date: '01/01/2018'
+          created: '01/01/2018'
         }
       ]
     }

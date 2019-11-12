@@ -13,19 +13,19 @@
                     </i>
                 </div>               
                 <div class="s12">
-                    <textarea id="textarea1" 
+                    <textarea id="questionText" 
                         placeholder="question" 
                         class="materialize-textarea" 
-                        v-model="value.question"
+                        v-model="value.text"
                         :disabled="!enableEdit">
                     </textarea>
                 </div>               
             </div>
             <div class="card-action">              
                 <div class="answers">
-                    <Answer v-for="(option,index) in value.options" 
+                    <Answer v-for="(answer,index) in value.answers" 
                         :key="index" 
-                        :value="option" 
+                        :value="answer" 
                         :index="index"
                         @deleteAnswer="deleteOption"
                         :enableDelete="enableDeleteAnswer"
@@ -69,13 +69,13 @@ export default {
         deleteQuestion() {
             this.$emit('deleteQuestion',this.index)
         },
-        deleteOption(optionIndex) {
-            this.$emit('deleteOption',this.index, optionIndex)
+        deleteOption(answerIndex) {
+            this.$emit('deleteOption',this.index, answerIndex)
         }
     },
     computed: {
         enableDeleteAnswer() {
-            return this.value.options.length > 2
+            return this.value.answers.length > 2
         }
     }
 }

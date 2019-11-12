@@ -5,7 +5,7 @@
         {{test.title}}
       </div>
       <p class="secondary">
-        {{test.date}}
+        {{test.created}}
       </p>
       <p class="content">
         {{test.description}}
