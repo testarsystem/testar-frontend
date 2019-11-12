@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar title="Testar" v-if="showMenu" />
-    <router-view/>
+    <router-view class="container"/>
   </div>
 </template>
 
@@ -17,8 +17,7 @@ export default {
     }
   },
   mounted(){
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
+    M.AutoInit();
   }
 }
 </script>
@@ -26,13 +25,14 @@ export default {
 <style>
 :root{
   --primary-color: #26a69a;
+  --secondary-color: #ff7043;
 }
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
 }
 
@@ -43,5 +43,9 @@ export default {
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: rgba(0,0,0,.12);
+}
+
+.container {
+  margin-bottom: 2rem !important;
 }
 </style>

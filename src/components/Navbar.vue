@@ -45,7 +45,7 @@ export default {
         goToTests()
         {
             this.closeSidenav();
-            this.$router.push('tests')
+            this.$router.push({name: 'tests'})
         }
     }
 }

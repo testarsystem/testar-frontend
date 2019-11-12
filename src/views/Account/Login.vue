@@ -5,16 +5,16 @@
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12">
-                    <input id="username" type="text" class="validate" v-model="authData.testar" @keyup="usernameKeyUpHandler($event)">
+                    <input id="username" type="text" v-model="authData.testar" @keyup="usernameKeyUpHandler($event)">
                     <label for="username">Login or email</label>
                 </div>
                 <div class="input-field col s12">
-                    <input id="password" type="password" class="validate" v-model="authData.password" ref="passwordInput" @keyup="passwordKeyUpHandler($event)">
+                    <input id="password" type="password" v-model="authData.password" ref="passwordInput" @keyup="passwordKeyUpHandler($event)">
                     <label for="password">Password</label>
                 </div>
             </div>
             <div class="row">
-                <button class="waves-effect waves-light btn" id="loginFormBtn" @click="loginClickHandler">Sign in</button>
+                <button class="btn" id="loginFormBtn" @click="loginClickHandler">Sign in to Testar</button>
             </div>
             <div class="row">
                 <p>Don't have an account? <router-link to="register">Register</router-link></p>
@@ -90,6 +90,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 .login.row {
     margin-bottom: 0!important;

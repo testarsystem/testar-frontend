@@ -5,32 +5,32 @@
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12 l6">
-                    <input id="email" type="email" class="validate" v-model="authData.email">
+                    <input id="email" type="email" v-model="authData.email">
                     <label for="email">Email</label>
                 </div>
                 <div class="input-field col s12 l6">
-                    <input id="username" type="text" class="validate" v-model="authData.username">
+                    <input id="username" type="text" v-model="authData.username">
                     <label for="username">Login</label>
                 </div>
                 <div class="input-field col s12 l6">
-                    <input id="firstName" type="text" class="validate" v-model="authData.first_name">
+                    <input id="firstName" type="text" v-model="authData.first_name">
                     <label for="firstName">Name</label>
                 </div>
                 <div class="input-field col s12 l6">
-                    <input id="lastName" type="text" class="validate" v-model="authData.last_name">
+                    <input id="lastName" type="text" v-model="authData.last_name">
                     <label for="lastName">Surname</label>
                 </div>
                 <div class="input-field col s12 l6">
-                    <input id="password" type="password" class="validate" :class="{invalid : isPasswordsMatch == false}" v-model="authData.password">
+                    <input id="password" type="password" :class="{validate,invalid : isPasswordsMatch == false}" v-model="authData.password">
                     <label for="password">Password</label>
                 </div>
                 <div class="input-field col s12 l6">
-                    <input id="passwordConfirm" type="password" class="validate" :class="{invalid : isPasswordsMatch == false}" v-model="passwordConfirm" @blur="comparePasswords">
+                    <input id="passwordConfirm" type="password" :class="{validate,invalid : isPasswordsMatch == false}" v-model="passwordConfirm" @blur="comparePasswords">
                     <label for="passwordConfirm">Confirm password</label>
                 </div>
             </div>
             <div class="row">
-                <button class="waves-effect waves-light btn" id="registerFormBtn" @click="registerClickHandler">Register</button>
+                <button class="btn" id="registerFormBtn" @click="registerClickHandler">Register on Testar</button>
             </div>
         </div>
     </div>
@@ -113,6 +113,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
 }
 
 .register.row {
