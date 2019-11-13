@@ -2,7 +2,7 @@
     <div class="register row">
         <h3>Registration</h3>
         <div class="col" id="registerForm">
-            <Alert type="danger" v-if="error">{{error}}</Alert>
+            <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12">
                     <input id="username" type="text" v-model="authData.username">
@@ -40,7 +40,7 @@ export default {
     },
     data(){
         return{
-            error: '',
+            errors: [],
             authData: {
                 username:'',
                 name:'',
@@ -53,17 +53,17 @@ export default {
     methods: {
         registerClickHandler()
         {
+            this.errors = []
             this.authData.username = this.authData.username.trim();
-            if (this.authData.password.length < 1 || 
-                this.passwordConfirm < 1 || this.authData.username < 1 || 
-                this.authData.name < 1)
+            if (this.authData.password.length < 1 || this.passwordConfirm < 1 
+                || this.authData.username < 1 || this.authData.name < 1)
             {
-                this.error = "Empty fields!";
+                this.errors.push("Empty fields!");
                 this.authData.password = '';
                 this.passwordConfirm = '';
             }
             else if(this.authData.password != this.passwordConfirm){
-                this.error = "Passwords don't match!";
+                this.errors.push("Passwords don't match!");
                 this.authData.password = '';
                 this.passwordConfirm = '';
             }           
@@ -73,7 +73,9 @@ export default {
                     this.$router.replace({path: this.$route.query.redirect || '/'});
                 })
                 .catch(err=>{
-                    this.error = err.message;
+                    err.forEach(item => {
+                        this.errors.push(item.message)
+                    });
                     this.authData.password = '';
                     this.passwordConfirm = '';
                 })

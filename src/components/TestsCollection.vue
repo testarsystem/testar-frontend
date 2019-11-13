@@ -39,10 +39,6 @@ export default {
   cursor: pointer;
 }
 
-.tests-collection {
-  margin: 2rem 0 1rem 0;
-}
-
 .tests-collection .content, .tests-collection .secondary {
   margin: .5rem 0 1rem 0!important;
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="create-test"> 
         <h3>New test</h3>
-        <Alert type="danger" v-if="error">{{error}}</Alert>  
+        <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
         <div class="col s12">
             <div class="row">
                 <div class="input-field col s12">
@@ -63,7 +63,7 @@ export default {
                     ]
                 }
             ],
-            error: ''
+            errors: [],
         }
     },
     computed: {
