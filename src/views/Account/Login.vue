@@ -2,11 +2,11 @@
     <div class="login row">
         <h3>Sign in</h3>
         <div class="col" id="loginForm">
-            <Alert type="danger" v-if="error">{{error}}</Alert>
+            <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
             <div class="row">
                 <div class="input-field col s12">
                     <input id="username" type="text" v-model="authData.testar" @keyup="usernameKeyUpHandler($event)">
-                    <label for="username">Login or email</label>
+                    <label for="username">Username</label>
                 </div>
                 <div class="input-field col s12">
                     <input id="password" type="password" v-model="authData.password" ref="passwordInput" @keyup="passwordKeyUpHandler($event)">
@@ -33,7 +33,7 @@ export default {
     },
     data(){
         return{
-            error: '',
+            errors: [],
             authData: {
                 testar: '',
                 password: ''
@@ -52,10 +52,11 @@ export default {
             }
         },
         loginClickHandler(){
+            this.errors = []
             this.authData.testar = this.authData.testar.trim();
             if (this.authData.testar.length < 1 || this.authData.password.length < 1)
             {
-                this.error = "Empty fields!";
+                this.errors.push("Empty fields!");
                 this.authData.password = '';
             }
             else{
@@ -64,11 +65,13 @@ export default {
                     this.$router.replace({path: this.$route.query.redirect || '/'});
                 })
                 .catch(err=>{
-                    this.error = err.message;
-                    this.authData.password = '';
+                    err.forEach(item => {
+                        this.errors.push(item.message)
+                    });
+                    this.authData.password = ''
                 })
             }
-        }
+        },        
     }
 }
 </script>

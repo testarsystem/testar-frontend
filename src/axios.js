@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import router from './router'
 
-const url = 'http://nabakirov.me:5000/v1/';
+const url = 'http://nabakirov.me:5000/';
 
 const baseInstance = axios.create({
     baseURL: url

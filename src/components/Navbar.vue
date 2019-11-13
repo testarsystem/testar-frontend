@@ -12,14 +12,15 @@
             <li>
                 <div class="user-view">                    
                     <i class="material-icons account-icon">account_circle</i>
-                    <span class="name">John Doe</span>
-                    <span class="email">jdandturk@gmail.com</span>                                
+                    <span class="name">{{user.name}}</span>
+                    <span class="email">{{user.username}}</span>                                
                 </div>
             </li>
             <hr class="list-divider">
             <li><a @click="goToTests">Tests</a></li>
             <li><a href="#">Second Link</a></li>
             <li><a href="#">Third Link</a></li>
+            <li><a @click="logout">Logout</a></li>
         </ul>
   </div>
 </template>
@@ -31,21 +32,30 @@ export default {
         title: {
             type: String,
             required: true
+        },
+        user: {
+            type: Object,
+            required: true
         }
     },
     methods: {
-        openSidenav() {
-            var instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
+        openSidenav() {  
+            let elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+            this.$emit('getUser')         
+            let instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
             instance.open()
         },
         closeSidenav() {
-            var instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
+            let instance = M.Sidenav.getInstance(this.$refs['mysidenav'])
             instance.close()            
         },
-        goToTests()
-        {
+        goToTests() {
             this.closeSidenav();
             this.$router.push({name: 'tests'})
+        },
+        logout() {
+            this.$store.dispatch('users/logoutUser')
         }
     }
 }

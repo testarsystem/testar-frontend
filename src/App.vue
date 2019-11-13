@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar title="Testar" v-if="showMenu" />
+    <Navbar title="Testar" v-if="showMenu" :user="user" @getUser="getUser"/>
     <router-view class="container"/>
   </div>
 </template>
@@ -14,6 +14,14 @@ export default {
   computed: {
     showMenu() {
       return this.$route.name !== 'login' && this.$route.name !== 'register';
+    },
+    user() {
+      return this.$store.state.users.user;
+    }
+  },
+  methods: {
+    getUser() {
+      this.$store.dispatch('users/decodeUser');
     }
   },
   mounted(){

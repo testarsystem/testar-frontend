@@ -1,31 +1,25 @@
 <template>
     <div class="register row">
         <h3>Registration</h3>
-        <div class="col m6 l6 s8 offset-m3 offset-l3 offset-s2" id="registerForm">
+        <div class="col" id="registerForm">
             <Alert type="danger" v-if="error">{{error}}</Alert>
             <div class="row">
-                <div class="input-field col s12 l6">
-                    <input id="email" type="email" v-model="authData.email">
-                    <label for="email">Email</label>
-                </div>
-                <div class="input-field col s12 l6">
+                <div class="input-field col s12">
                     <input id="username" type="text" v-model="authData.username">
                     <label for="username">Login</label>
                 </div>
-                <div class="input-field col s12 l6">
-                    <input id="firstName" type="text" v-model="authData.first_name">
-                    <label for="firstName">Name</label>
+                <div class="input-field col s12">
+                    <input id="name" type="text" v-model="authData.name">
+                    <label for="name">Name</label>
                 </div>
-                <div class="input-field col s12 l6">
-                    <input id="lastName" type="text" v-model="authData.last_name">
-                    <label for="lastName">Surname</label>
-                </div>
-                <div class="input-field col s12 l6">
-                    <input id="password" type="password" :class="{validate,invalid : isPasswordsMatch == false}" v-model="authData.password">
+            </div>
+            <div class="row">    
+                <div class="input-field col s12">
+                    <input id="password" type="password" v-model="authData.password">
                     <label for="password">Password</label>
                 </div>
-                <div class="input-field col s12 l6">
-                    <input id="passwordConfirm" type="password" :class="{validate,invalid : isPasswordsMatch == false}" v-model="passwordConfirm" @blur="comparePasswords">
+                <div class="input-field col s12">
+                    <input id="passwordConfirm" type="password" v-model="passwordConfirm">
                     <label for="passwordConfirm">Confirm password</label>
                 </div>
             </div>
@@ -48,10 +42,8 @@ export default {
         return{
             error: '',
             authData: {
-                email:'',
                 username:'',
-                first_name:'',
-                last_name:'',
+                name:'',
                 password:''
             },
             passwordConfirm: '',
@@ -59,25 +51,18 @@ export default {
         }
     },
     methods: {
-        comparePasswords()
-        {
-            if(this.authData.password != this.passwordConfirm)
-                this.isPasswordsMatch = false;    
-            else
-                this.isPasswordsMatch = true;
-        },
         registerClickHandler()
         {
             this.authData.username = this.authData.username.trim();
-            if (this.authData.email.length < 1 || this.authData.password.length < 1 || 
+            if (this.authData.password.length < 1 || 
                 this.passwordConfirm < 1 || this.authData.username < 1 || 
-                this.authData.first_name < 1 || this.authData.last_name < 1)
+                this.authData.name < 1)
             {
                 this.error = "Empty fields!";
                 this.authData.password = '';
                 this.passwordConfirm = '';
             }
-            else if(!this.isPasswordsMatch){
+            else if(this.authData.password != this.passwordConfirm){
                 this.error = "Passwords don't match!";
                 this.authData.password = '';
                 this.passwordConfirm = '';
@@ -113,10 +98,15 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
-.register.row {
+.register.row, .register .row {
     margin-bottom: 0!important;
+}
+
+.register .row:last-of-type {
+    margin-top: 20px!important;
 }
 </style>
