@@ -1,21 +1,6 @@
 <template>
-    <div class="test">
-        <div class="col s12">
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="title" type="text" v-model="test.title">
-                    <label for="title">Title</label>
-                </div>                
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <textarea id="description" class="materialize-textarea" v-model="test.description"></textarea>
-                    <label for="description">Description</label>
-                </div>
-            </div>
-        </div>
-        <h5>Total: {{test.questions.length}}</h5>
-        <Question v-for="(question,index) in test.questions" 
+    <div class="test">        
+        <Question v-for="(question,index) in questions" 
             :key="index" 
             :value="question" 
             :index="index"
@@ -39,8 +24,8 @@ export default {
         Question
     },
     props: {
-        test: {
-            type: Object,
+        questions: {
+            type: Array,
             required: true
         },
         enableDeleteQuestion: {

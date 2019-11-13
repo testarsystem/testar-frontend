@@ -1,9 +1,24 @@
 <template>
     <div class="create-test"> 
         <h3>New test</h3>
-        <Alert type="danger" v-if="error">{{error}}</Alert>                 
+        <Alert type="danger" v-if="error">{{error}}</Alert>  
+        <div class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="title" type="text" v-model="test.title">
+                    <label for="title">Title</label>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="description" class="materialize-textarea" v-model="test.description"></textarea>
+                    <label for="description">Description</label>
+                </div>
+            </div>
+        </div>
+        <h5>Total: {{questions.length}}</h5>               
         <Test 
-            :test="test"
+            :questions="questions"
             :enableDeleteQuestion="enableDeleteQuestion" 
             :enableEdit="enableEdit" 
             :addQuestion="addQuestion"
@@ -31,29 +46,29 @@ export default {
             test: {
                 id: 0,
                 title: '',
-                description: '',
-                questions: [
-                    {
-                        text: '',
-                        answers: [
-                            {
-                                text: '',
-                                correct: false
-                            },
-                            {
-                                text: '',
-                                correct: false
-                            }
-                        ]
-                    }
-                ]
+                description: '',               
             },
+            questions: [
+                {
+                    text: '',
+                    answers: [
+                        {
+                            text: '',
+                            correct: false
+                        },
+                        {
+                            text: '',
+                            correct: false
+                        }
+                    ]
+                }
+            ],
             error: ''
         }
     },
     computed: {
         enableDeleteQuestion() {
-            return this.test.questions.length > 1
+            return this.questions.length > 1
         },
         enableEdit() {
             return true;
@@ -61,7 +76,7 @@ export default {
     },
     methods: {
         addQuestion() {
-            this.test.questions.push(
+            this.questions.push(
                 {
                     text: '',
                     answers: [
@@ -90,7 +105,7 @@ export default {
             }
         },
         addOption(questionIndex) {
-            this.test.questions[questionIndex].answers.push(
+            this.questions[questionIndex].answers.push(
                 {
                     text: '',
                     checked: false
@@ -98,7 +113,7 @@ export default {
             )
         },
         deleteOption(questionIndex, answerIndex) {
-            if(this.test.questions[questionIndex].answers.length > 2)
+            if(this.questions[questionIndex].answers.length > 2)
             {
                 var toDelete = null
                 if(!this.isOptionEmpty(questionIndex,answerIndex))
@@ -106,17 +121,17 @@ export default {
                 else
                     toDelete = true
                 if(toDelete)
-                    this.test.questions[questionIndex].answers.splice(answerIndex, 1)
+                    this.questions[questionIndex].answers.splice(answerIndex, 1)
             }
         },
         isOptionEmpty(questionIndex,answerIndex) {
-            return this.test.questions[questionIndex].answers[answerIndex].text.length <= 0
+            return this.questions[questionIndex].answers[answerIndex].text.length <= 0
         },
         isQuestionEmpty(questionIndex) {
-            if(this.test.questions[questionIndex].question.length > 0)
+            if(this.questions[questionIndex].text.length > 0)
                 return false
             var areEmpty = true
-            for(var i=0; i<this.test.questions[questionIndex].answers.length; i++) {
+            for(var i=0; i<this.questions[questionIndex].answers.length; i++) {
                 areEmpty = this.isOptionEmpty(questionIndex,i)
                 if(areEmpty == false)
                     break;
