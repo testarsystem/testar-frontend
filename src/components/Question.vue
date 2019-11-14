@@ -6,7 +6,7 @@
                     <span>Question {{index+1}}</span> 
                     <i class="material-icons small" 
                         @click="deleteQuestion" 
-                        :class="{ 'blue-grey-text text-lighten-3' : !enableDelete }"
+                        :class="{ 'blue-grey-text text-lighten-3' : (!enableDelete || disable) }"
                         v-if="enableEdit"
                     >
                         close
@@ -17,7 +17,8 @@
                         placeholder="question" 
                         class="materialize-textarea" 
                         v-model="value.text"
-                        :disabled="!enableEdit">
+                        :disabled="!enableEdit || disable"
+                        maxlength="200">
                     </textarea>
                 </div>               
             </div>
@@ -30,6 +31,7 @@
                         @deleteAnswer="deleteOption"
                         :enableDelete="enableDeleteAnswer"
                         :enableEdit="enableEdit"
+                        :disableById="disableById"
                     />
                 </div>  
                 <div class="add-answer-button" v-if="enableEdit">
@@ -60,6 +62,10 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
+        },
+        disableById: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -67,7 +73,8 @@ export default {
             this.$emit('addOption',this.index)
         },
         deleteQuestion() {
-            this.$emit('deleteQuestion',this.index)
+            if(this.enableDelete && !this.disable)
+                this.$emit('deleteQuestion',this.index)
         },
         deleteOption(answerIndex) {
             this.$emit('deleteOption',this.index, answerIndex)
@@ -76,6 +83,9 @@ export default {
     computed: {
         enableDeleteAnswer() {
             return this.value.answers.length > 2
+        },
+        disable() {
+            return this.disableById && this.value.id > 0
         }
     }
 }

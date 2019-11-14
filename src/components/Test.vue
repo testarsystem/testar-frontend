@@ -6,6 +6,7 @@
             :index="index"
             :enableDelete="enableDeleteQuestion"
             :enableEdit="enableEdit"
+            :disableById="disableById"
             @deleteQuestion="deleteQuestion"
             @addOption="addOption"
             @deleteOption="deleteOption"
@@ -51,6 +52,10 @@ export default {
         deleteOption: {
             type: Function,
             default: ()=>{}
+        },
+        disableById: {
+            type: Boolean,
+            default: false
         }
     }
 }

@@ -3,6 +3,7 @@
     <h3>Tests</h3>
     <router-link to="/tests/new" class="btn" id="newTestBtn">New test</router-link>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
+    <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
     <TestsCollection :tests="tests" />
   </div>
 </template>
@@ -10,6 +11,7 @@
 <script>
 import TestsCollection from "@/components/TestsCollection.vue";
 import Alert from "@/components/Alert.vue";
+import Flash from 'js-flash-message'
 
 export default {
   name: "tests",
@@ -36,8 +38,16 @@ export default {
           created: "01/01/2018"
         }
       ],
-      errors: []
-    };
+      errors: [],
+      successes: []
+    }
+  },
+  mounted() {
+    const flashes = Flash.get()
+    flashes.forEach(flash=>{
+      if(flash.type == 'success')
+        this.successes.push(flash.message)
+    })
   }
 };
 </script>

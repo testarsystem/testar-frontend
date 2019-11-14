@@ -1,5 +1,5 @@
 import axios from '../../axios'
-import errorParser from './ErrorParser'
+import errorParser from '../ErrorParser'
 
 const state = {
     user: {
@@ -18,11 +18,12 @@ const actions ={
                 commit('setUser', response.data.user); 
                 
             } else {
-                throw errorParser("There were problems signing in to your account.");
+                throw new Error("There were problems signing in to your account.");
             }
         }
         catch(err) {
             commit('deleteToken')
+            commit('deleteUser')
             let errors = errorParser(err)
             throw (errors)
         }
@@ -35,11 +36,12 @@ const actions ={
                 commit('setToken', token)
                 commit('setUser', response.data.user);
             } else {
-                throw errorParser("There were problems creating your account.");
+                throw new Error("There were problems creating your account.");
             }
         }
         catch(err) {
             commit('deleteToken')
+            commit('deleteUser')
             let errors = errorParser(err)
             throw (errors)
         }

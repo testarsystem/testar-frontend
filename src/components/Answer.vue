@@ -1,12 +1,12 @@
 <template>
     <div class="answer">      
-        <input placeholder="option" type="text" v-model="value.text" :disabled="!enableEdit">
+        <input placeholder="option" type="text" v-model="value.text" :disabled="!enableEdit || disable" maxlength="50">
         <label>
-            <input type="checkbox" v-model="value.correct"/><span></span>
+            <input type="checkbox" v-model="value.correct" :disabled="disable"/><span></span>
         </label>
         <i 
             class="material-icons" @click="deleteAnswer" 
-            :class="{ 'blue-grey-text text-lighten-3' : !enableDelete }"
+            :class="{ 'blue-grey-text text-lighten-3' : (!enableDelete || disable) }"
             v-if="enableEdit"
         >
             delete
@@ -30,11 +30,21 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
+        },
+        disableById: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
         deleteAnswer() {
-            this.$emit('deleteAnswer',this.index)
+            if(this.enableDelete && !this.disable)
+                this.$emit('deleteAnswer',this.index)
+        }
+    },
+    computed: {
+        disable() {
+            return this.disableById && this.value.id > 0
         }
     }
 }

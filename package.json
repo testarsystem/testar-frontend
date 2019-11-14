@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
+    "js-flash-message": "^1.0.8",
     "materialize-css": "^1.0.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
