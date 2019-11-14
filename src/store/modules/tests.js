@@ -59,6 +59,73 @@ const actions = {
     finally {     
       return result
     }
+  },
+  async getAll() {
+    const result = new OperationResult()
+    try {
+      const response = await axios.get(`test/v1/tests/`)
+      result.entity = response.data
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async getById(_,id) {
+    const result = new OperationResult()
+    try {
+      const response = await axios.get(`test/v1/tests/${id}`)
+      result.entity = response.data
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async update({dispatch}, test) {
+    const result = new OperationResult()
+    result.entity = test
+    try {
+      validateTest(test)      
+        const pureTest = {title: test.title, description: test.description}
+      if(test.id == 0 || !test.id) {      
+        const response = await axios.post(`test/v1/tests/`, pureTest)
+        test.id = response.data.id
+        result.entity = test
+      } else if(test.isEdited) {        
+        await axios.put(`test/v1/tests/${test.id}/`, pureTest)
+        test.isEdited = false
+      }
+      test.questions = await dispatch('questions/updateRange', {testId: test.id, questions: test.questions}, {root:true})
+      result.success()
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async delete(_,id) {
+    const result = new OperationResult()
+    try {
+      await axios.delete(`test/v1/tests/${id}`)
+      result.success()
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
   }
 }
 

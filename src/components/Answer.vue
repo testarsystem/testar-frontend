@@ -1,8 +1,17 @@
 <template>
     <div class="answer">      
-        <input placeholder="option" type="text" v-model="value.text" :disabled="!enableEdit || disable" maxlength="50">
+        <input 
+            placeholder="option" 
+            type="text" 
+            v-model="value.text" 
+            :disabled="!enableEdit || disable" 
+            maxlength="50"
+            @change="inputOnChangeListener">
         <label>
-            <input type="checkbox" v-model="value.correct" :disabled="disable"/><span></span>
+            <input 
+                type="checkbox" v-model="value.correct" 
+                :disabled="disable" @change="inputOnChangeListener"/>
+            <span></span>
         </label>
         <i 
             class="material-icons" @click="deleteAnswer" 
@@ -40,6 +49,9 @@ export default {
         deleteAnswer() {
             if(this.enableDelete && !this.disable)
                 this.$emit('deleteAnswer',this.index)
+        },
+        inputOnChangeListener() {
+            this.value.isEdited = true
         }
     },
     computed: {

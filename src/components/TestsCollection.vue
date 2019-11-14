@@ -1,9 +1,9 @@
 <template>
   <ul class="tests-collection collection">
-    <li class="collection-item avatar" v-for="test in tests" :key="test.Id">      
-      <div class="title">
+    <li class="collection-item avatar" v-for="test in tests" :key="test.id">      
+      <router-link class="title" :to="`/Tests/${test.id}`">
         {{test.title}}
-      </div>
+      </router-link>
       <p class="secondary">
         {{test.created}}
       </p>
@@ -32,6 +32,7 @@ export default {
 .tests-collection .title {
   font-size: 1.64rem !important;
   line-height: 110%;
+  color: #2c3e50;
 }
 
 .tests-collection .title:hover{

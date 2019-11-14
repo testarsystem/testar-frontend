@@ -32,6 +32,10 @@ export default new Router({
       path: '/tests/new',
       name: 'newTest',
       component: () => import('./views/Tests/CreateTest.vue')
+    },
+    {
+      path: '/tests/:id',
+      component: () => import('./views/Tests/Test.vue')
     }
   ]
 })

@@ -27,6 +27,34 @@ const actions = {
 			}
 		}
 		return questions
+	},
+	async update(_, {testId, question}) {
+		try {
+			await axios.put(`test/v1/tests/${testId}/questions/`, question)
+		}
+		catch (err) {
+			const errors = errorParser(err)
+			throw (errors)
+		}
+	},
+	async updateRange({dispatch},{testId, questions}) {
+		for(let [i,question] of questions.entries()) {
+			try {
+				if(question.id == 0 || !question.id) {
+					const response = await dispatch('create', {testId, question})
+					questions[i].id = response.id
+				}	else if(question.isEdited) {
+					await dispatch('update', {testId, question})
+					questions[i].isEdited = false
+				}		
+				questions[i].answers = await dispatch('answers/updateRange', {testId, questionId: questions[i].id, answers: question.answers}, {root:true})
+			}
+			catch (err) {
+				let errors = errorParser(err)
+				throw (errors)
+			}
+		}
+		return questions
 	}
 }
 

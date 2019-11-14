@@ -18,7 +18,8 @@
                         class="materialize-textarea" 
                         v-model="value.text"
                         :disabled="!enableEdit || disable"
-                        maxlength="200">
+                        maxlength="200"
+                        @change="inputOnChangeListener">
                     </textarea>
                 </div>               
             </div>
@@ -78,6 +79,9 @@ export default {
         },
         deleteOption(answerIndex) {
             this.$emit('deleteOption',this.index, answerIndex)
+        },
+        inputOnChangeListener() {
+            this.value.isEdited = true
         }
     },
     computed: {
