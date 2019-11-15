@@ -10,7 +10,7 @@
       <p class="content">
         {{test.description}}
       </p>      
-      <a class="btn btn-small">Start competition</a>
+      <a class="btn btn-small" @click="$emit('startBtnHandler', test.id)">Start competition</a>     
     </li>
   </ul> 
 </template>

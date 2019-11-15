@@ -35,7 +35,11 @@ export default new Router({
     },
     {
       path: '/tests/:id',
-      component: () => import('./views/Tests/Test.vue')
+      component: () => import('./views/Tests/EditTest.vue')
+    },
+    {
+      path: '/tests/:id/competition',
+      component: () => import('./views/Competitions/CreateCompetition.vue')
     }
   ]
 })

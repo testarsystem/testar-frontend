@@ -41,7 +41,6 @@
 <script>
 import Test from "@/components/Test.vue";
 import Alert from "@/components/Alert.vue";
-import operationResult from "../../store/OperationResult";
 import Flash from "js-flash-message";
 
 export default {

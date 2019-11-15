@@ -4,7 +4,7 @@
     <router-link to="/tests/new" class="btn" id="newTestBtn">New test</router-link>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
-    <TestsCollection :tests="tests" v-if="tests.length > 0"/>
+    <TestsCollection :tests="tests" v-if="tests.length > 0" @startBtnHandler="startBtnHandler"/>
     <div class="substrate" v-else>
       Tests list is empty
     </div>
@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import TestsCollection from "@/components/TestsCollection.vue";
-import Alert from "@/components/Alert.vue";
+import TestsCollection from '@/components/TestsCollection.vue';
+import Alert from '@/components/Alert.vue';
 import Flash from 'js-flash-message'
 
 export default {
@@ -26,7 +26,8 @@ export default {
     return {
       tests: [],
       errors: [],
-      successes: []
+      successes: [],
+      competition: {}
     }
   },
   methods: {
@@ -37,6 +38,9 @@ export default {
         this.errors.push(item.message);
       })
       this.tests = res.entity.results
+    },
+    startBtnHandler(id) {
+      this.$router.push(`/tests/${id}/competition`)
     }
   },
   mounted() {

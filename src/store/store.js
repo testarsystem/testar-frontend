@@ -4,6 +4,7 @@ import users from './modules/users'
 import tests from './modules/tests'
 import questions from './modules/questions'
 import answers from './modules/answers'
+import competitions from './modules/competitions'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     users,
     tests,
     questions,
-    answers
+    answers,
+    competitions
   }
 })
