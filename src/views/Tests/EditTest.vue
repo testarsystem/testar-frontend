@@ -6,7 +6,8 @@
     </div>  
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
-    <div class="col s12">
+    <Loader v-if="isLoading"/>
+    <div class="col s12" v-else>
       <div class="row">
         <div class="input-field col s12">
           <input id="test-title" type="text" v-model="test.title" maxlength="50" :disabled="enableEdit" @change="inputOnChangeListener"/>
@@ -31,8 +32,9 @@
         </div>       
       </div>
     </div>
-    <h5>Total: {{questions.length}}</h5>
+    <h5 v-if="!isLoading">Total: {{questions.length}}</h5>
     <Test
+      v-if="!isLoading && questions.length > 0"
       :questions="questions"
       :enableDeleteQuestion="enableDeleteQuestion"
       :enableEdit="enableEditTest"
@@ -40,9 +42,9 @@
       :deleteQuestion="deleteQuestion"
       :addOption="addOption"
       :deleteOption="deleteOption"
-      :disableById="disableById"
+      :disableById="disableById"      
     />
-    <div class="update-test-button">
+    <div class="update-test-button" v-if="!isLoading">
       <button class="btn btn-large" id="CreateTestBtn" @click="updateTestBtnHandler">Update test</button>
     </div>
   </div>
@@ -54,12 +56,14 @@ import Alert from "@/components/Alert.vue";
 import operationResult from "../../store/OperationResult";
 import Flash from "js-flash-message";
 import {getDateString} from '../../utils/DateUtils'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: "editTest",
   components: {
     Test,
-    Alert
+    Alert,
+    Loader
   },
   data() {
     return {
@@ -71,7 +75,8 @@ export default {
       },
       questions: [],
       errors: [],
-      successes: []
+      successes: [],
+      isLoading: false
     };
   },
   computed: {
@@ -157,6 +162,7 @@ export default {
     },
     async getById(id) {
       this.clearAlerts()
+      this.isLoading = true
       const res = await this.$store.dispatch('tests/getById', id)
       res.errors.forEach(item => {
         this.errors.push(item.message);
@@ -165,16 +171,20 @@ export default {
       this.test.title = res.entity.title
       this.test.description = res.entity.description
       this.test.created = getDateString(res.entity.created)
-      this.questions = res.entity.questions
+      if(res.entity.questions)
+        this.questions = res.entity.questions
+      this.isLoading = false
     },
     async updateTestBtnHandler() {
       this.clearAlerts()
+      this.isLoading = true
       const res = await this.$store.dispatch("tests/update", {
         ...this.test,
         questions: this.questions
       });
       this.questions = res.entity.questions;
       this.test.isEdited = false
+      this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
       });
@@ -187,7 +197,9 @@ export default {
       const conf = confirm('Are you sure you want to delete this test?')
       if(conf == false)
         return
+      this.isLoading = true
       const res = await this.$store.dispatch('tests/delete', this.test.id)
+      this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
       });

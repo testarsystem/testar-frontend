@@ -4,8 +4,9 @@
     <router-link to="/tests/new" class="btn" id="newTestBtn">New test</router-link>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
-    <TestsCollection :tests="tests" v-if="tests.length > 0" @startBtnHandler="startBtnHandler"/>
-    <div class="substrate" v-else>
+    <Loader v-if="isLoading"/>
+    <TestsCollection :tests="tests" v-if="!isLoading && tests.length > 0" @startBtnHandler="startBtnHandler"/>
+    <div class="substrate" v-if="!isLoading && tests.length < 1">
       Tests list is empty
     </div>
   </div>
@@ -15,29 +16,35 @@
 import TestsCollection from '@/components/TestsCollection.vue';
 import Alert from '@/components/Alert.vue';
 import Flash from 'js-flash-message'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: "tests",
   components: {
     TestsCollection,
-    Alert
+    Alert,
+    Loader
   },
   data() {
     return {
       tests: [],
       errors: [],
       successes: [],
-      competition: {}
+      competition: {},
+      isLoading: false
     }
   },
   methods: {
     async getTests() {
       this.errors = [];
+      this.isLoading = true
       const res = await this.$store.dispatch("tests/getAll")
+      this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
       })
-      this.tests = [...res.entity.results]
+      if(res.entity.results)
+        this.tests = [...res.entity.results]   
     },
     startBtnHandler(id) {
       this.$router.push(`/tests/${id}/competition`)

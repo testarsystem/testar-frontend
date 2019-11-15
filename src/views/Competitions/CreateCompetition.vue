@@ -2,8 +2,9 @@
   <div class="create-competition row">
     <div class="col s8 offset-s2">
       <h3>New competition</h3>
-      <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>  
-      <div class="row">
+      <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert> 
+      <Loader v-if="isLoading"/> 
+      <div class="row" v-else>
         <div class="input-field col s12">
           <input type="text" id="title" maxlength="200" v-model="competition.title"/>
           <label for="title" class="active">Title</label>
@@ -33,9 +34,9 @@
           <label for="description" class="active">Description</label>
         </div>
       </div>
-      <div class="create-comp-button">
-          <button class="btn btn-large" @click="createCompBtnHandler" id="CreateCompBtn">Start</button>
-        </div>
+      <div class="create-comp-button" v-if="!isLoading">
+        <button class="btn btn-large" @click="createCompBtnHandler" id="CreateCompBtn">Start</button>
+      </div>
     </div>
   </div>
 </template>
@@ -44,11 +45,13 @@
 import Alert from '@/components/Alert.vue'
 import Flash from 'js-flash-message'
 import {toISODate} from '../../utils/DateUtils'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: "newCompetition",
   components: {
-    Alert
+    Alert,
+    Loader
   },
   data(){
     return {
@@ -60,7 +63,8 @@ export default {
         title: '',
         description: ''
       },
-      errors: []
+      errors: [],
+      isLoading: false
     }
   },
   mounted() {
@@ -73,6 +77,7 @@ export default {
   methods: {
     async getById(id) {
       this.errors = []
+      this.isLoading = true
       const res = await this.$store.dispatch('tests/getById', id)
       res.errors.forEach(item => {
         this.errors.push(item.message);
@@ -80,12 +85,15 @@ export default {
       this.competition.test = res.entity.id
       this.competition.title = res.entity.title
       this.competition.description = res.entity.description
+      this.isLoading = false
     },
     async createCompBtnHandler() {
       this.errors = []
+      this.isLoading = true
       this.competition.start_time = toISODate(this.$refs['startDate'].value + ' ' + this.$refs['startTime'].value)
       this.competition.finish_time = toISODate(this.$refs['finishDate'].value + ' ' + this.$refs['finishTime'].value)
       const res = await this.$store.dispatch('competitions/create', this.competition)
+      this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
       });
