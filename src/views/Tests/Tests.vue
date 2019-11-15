@@ -37,7 +37,7 @@ export default {
       res.errors.forEach(item => {
         this.errors.push(item.message);
       })
-      this.tests = res.entity.results
+      this.tests = [...res.entity.results]
     },
     startBtnHandler(id) {
       this.$router.push(`/tests/${id}/competition`)

@@ -18,7 +18,7 @@
             </li>
             <hr class="list-divider">
             <li><a @click="goToTests">Tests</a></li>
-            <li><a href="#">Second Link</a></li>
+            <li><a @click="goToMyCompetitions">My competitions</a></li>
             <li><a href="#">Third Link</a></li>
             <li><a @click="logout">Logout</a></li>
         </ul>
@@ -53,6 +53,10 @@ export default {
         goToTests() {
             this.closeSidenav();
             this.$router.push({name: 'tests'})
+        },
+        goToMyCompetitions() {
+            this.closeSidenav();
+            this.$router.push({name: 'myCompetitions'})
         },
         logout() {
             this.$store.dispatch('users/logoutUser')

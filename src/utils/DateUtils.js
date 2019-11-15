@@ -1,8 +1,9 @@
 export const getDateString = (date) => {
   if(date){
-    let dateString = date.split('.')
-    return dateString[0].replace('T',' ')
+    return new Date(date).toString().slice(0,24)
   }
+  else
+   return ''
 }
 
 export const toISODate = (dateString) => {

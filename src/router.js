@@ -40,6 +40,11 @@ export default new Router({
     {
       path: '/tests/:id/competition',
       component: () => import('./views/Competitions/CreateCompetition.vue')
+    },
+    {
+      path: '/my_competitions',
+      name: 'myCompetitions',
+      component: () => import('./views/Competitions/MyCompetitions.vue')
     }
   ]
 })

@@ -94,7 +94,7 @@ export default {
           type: "success",
           message: "The competition was started successfully"
         });
-        this.$router.push('/')
+        this.$router.push({name: 'myCompetitions'})
       }      
     }
   }
