@@ -34,6 +34,7 @@ export default {
 :root{
   --primary-color: #26a69a;
   --secondary-color: #ff7043;
+  --grey: #607d8b;
 }
 
 #app {

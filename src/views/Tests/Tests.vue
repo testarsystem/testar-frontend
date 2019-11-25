@@ -5,7 +5,17 @@
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
     <Loader v-if="isLoading"/>
-    <TestsCollection :tests="tests" v-if="!isLoading && tests.length > 0" @startBtnHandler="startBtnHandler"/>
+    <TestsCollection 
+      :tests="tests" 
+      v-if="!isLoading && tests.length > 0" 
+      :isBtnEnabled="isBtnEnabled" 
+      :isLinkEnabled="isLinkEnabled" 
+      :isTitleBtnEnabled="isTitleBtnEnabled"
+      btnText="StartCompetition" 
+      @btnHandler="startBtnHandler"
+      @linkHandler="linkHandler"
+      @titleBtnHandler="deleteTestBtnHandler"
+      />
     <div class="substrate" v-if="!isLoading && tests.length < 1">
       Tests list is empty
     </div>
@@ -36,7 +46,7 @@ export default {
   },
   methods: {
     async getTests() {
-      this.errors = [];
+      this.clearAlerts()
       this.isLoading = true
       const res = await this.$store.dispatch("tests/getAll")
       this.isLoading = false
@@ -48,6 +58,37 @@ export default {
     },
     startBtnHandler(id) {
       this.$router.push(`/tests/${id}/competition`)
+    },
+    isBtnEnabled() {
+      return true
+    },
+    isLinkEnabled() {
+      return true
+    },
+    isTitleBtnEnabled() {
+      return true
+    },
+    linkHandler(id) {
+      this.$router.push(`/tests/${id}`)
+    },
+    async deleteTestBtnHandler(id) {
+      this.clearAlerts()
+      const conf = confirm('Are you sure you want to delete this test?')
+      if(conf == false)
+        return
+      this.isLoading = true
+      const res = await this.$store.dispatch('tests/delete', id)
+      this.isLoading = false
+      res.errors.forEach(item => {
+        this.errors.push(item.message);
+      });
+      if (res.isSuccess) {
+        this.successes.push('The test was deleted successfully')
+      }
+    },
+    clearAlerts() {
+      this.errors = []
+      this.successes = []
     }
   },
   mounted() {

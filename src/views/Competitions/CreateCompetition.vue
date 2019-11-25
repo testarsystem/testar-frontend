@@ -1,7 +1,10 @@
 <template>
   <div class="create-competition row">
     <div class="col s8 offset-s2">
-      <h3>New competition</h3>
+      <div class="title">
+        <h3>New competition</h3>
+        <button class="btn btn-small" @click="cancelBtnHandler">cancel</button>
+      </div> 
       <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert> 
       <Loader v-if="isLoading"/> 
       <div class="row" v-else>
@@ -59,7 +62,7 @@ export default {
         test: 0,
         start_time: '',
         finish_time: '',
-        duration: '  :  ',
+        duration: '01:00',
         title: '',
         description: ''
       },
@@ -104,6 +107,11 @@ export default {
         });
         this.$router.push({name: 'myCompetitions'})
       }      
+    },
+    cancelBtnHandler() {
+      const conf = confirm('Are you sure you want to cancel competition creation?')
+      if(conf == true)
+        this.$router.push("/tests/");
     }
   }
 }
@@ -113,5 +121,14 @@ export default {
 .create-competition .create-comp-button {
   text-align: center;
   margin-top: 1rem;
+}
+
+.create-competition .title {
+  display: flex;
+}
+
+.create-competition .title button{
+  margin: 2.5rem 0 1.168rem auto;
+  background-color: var(--grey);
 }
 </style>

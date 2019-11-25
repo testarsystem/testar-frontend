@@ -2,7 +2,7 @@
   <div class="edit-test">
     <div class="title">
       <h3>Edit test</h3>
-      <button class="btn" @click="deleteTestBtnHandler">delete</button>
+      <button class="btn btn-small" @click="deleteTestBtnHandler">delete</button>
     </div>  
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
@@ -243,5 +243,6 @@ export default {
 
 .edit-test .title button{
   margin: 2.5rem 0 1.168rem auto;
+  background-color: var(--grey);
 }
 </style>

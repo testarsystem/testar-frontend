@@ -48,6 +48,20 @@ const actions = {
     finally {     
       return result
     }
+  },
+  async delete(_,id) {
+    const result = new OperationResult()
+    try {
+      await axios.delete(`competition/v1/competitions/${id}`)
+      result.success()
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
   }
 }
 

@@ -93,7 +93,7 @@ const actions = {
     result.entity = test
     try {
       validateTest(test)      
-        const pureTest = {title: test.title, description: test.description}
+      const pureTest = {title: test.title, description: test.description}
       if(test.id == 0 || !test.id) {      
         const response = await axios.post(`test/v1/tests/`, pureTest)
         test.id = response.data.id

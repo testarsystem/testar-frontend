@@ -77,6 +77,7 @@ export default {
 }
 
 .answer i {
-    cursor: pointer;
+    cursor: pointer;  
+    color: var(--grey); 
 }
 </style>
