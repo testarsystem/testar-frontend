@@ -1,70 +1,37 @@
 import axios from '../../axios'
 import errorParser from '../ErrorParser'
 import OperationResult from '../OperationResult'
+import ActionsEnum from '../../utils/ActionsEnum'
+import {validateTest} from '../../utils/TestValidation'
 
-const validateTest = (test) => {
-  let errors = []
-  if(!test.title || test.title.length < 1)
-    errors.push(new Error('The title of test can\'t be empty'))
-  const quesErrors = validateQuestions(test.questions)
-  errors = [...errors,...quesErrors]
-  if(errors.length > 0) 
-    throw errors
+const state = {
+  tests: []
 }
 
-const validateQuestions = (questions) => {
-  let errors = []
-  questions.forEach((question,i) => {
-    if(!question.text || question.text.length < 1)
-      errors.push(new Error(`The text of Question ${i+1} can\'t be empty`))  
-    const ansErrors = validateAnswers({questionIndex: i, answers: question.answers})
-    errors = [...errors,...ansErrors]  
-  });
-  return errors
+const createTest = async (test) => {         
+  const pureTest = {title:test.title, description:test.description}
+  const response = await axios.post(`test/v1/tests/`, pureTest)
+  test.id = response.data.id
+  return test
 }
 
-const validateAnswers = ({questionIndex,answers}) => {
-  let errors = []
-  let isCorrect = false
-  answers.forEach((answer,i) => {
-    if(!answer.text || answer.text.length < 1)
-      errors.push(new Error(`The text of Answer ${i+1} - Question ${questionIndex+1} can\'t be empty`)) 
-    if(answer.correct)
-      isCorrect = true   
-  });
-  if(!isCorrect)
-    errors.push(new Error(`The Question ${questionIndex+1} must have at least one correct option`)) 
-  return errors
+const updateTest = async (test) => {        
+  const pureTest = {id:test.id, title:test.title, description:test.description}
+  await axios.put(`test/v1/tests/${id}/`, pureTest)
+}
+
+const deleteTest = async (id) => {
+  await axios.delete(`test/v1/tests/${id}`)     
 }
 
 const actions = {
-  async create({dispatch}, test) {
+  async getAll({state,commit}) {
     const result = new OperationResult()
-    result.entity = test
     try {
-      if(test.id == 0 || !test.id) {      
-        validateTest(test)      
-        const pureTest = {title: test.title, description: test.description}
-        const response = await axios.post(`test/v1/tests/`, pureTest)
-        test.id = response.data.id
-        result.entity = test
+      if(state.tests.length < 1) {
+        const response = await axios.get(`test/v1/tests/`)
+        commit('setTests', response.data.results) 
       }
-      test.questions = await dispatch('questions/createRange', {testId: test.id, questions: test.questions}, {root:true})
-      result.success()
-    }
-    catch (err) {
-      const errors = errorParser(err)
-      result.addErrors(errors)
-    }
-    finally {     
-      return result
-    }
-  },
-  async getAll() {
-    const result = new OperationResult()
-    try {
-      const response = await axios.get(`test/v1/tests/`)
-      result.entity = response.data
     }
     catch (err) {
       const errors = errorParser(err)
@@ -88,48 +55,74 @@ const actions = {
       return result
     }
   },
-  async update({dispatch}, test) {
+  async manage({dispatch,commit},test) {
     const result = new OperationResult()
-    result.entity = test
-    try {
-      validateTest(test)      
-      const pureTest = {title: test.title, description: test.description}
-      if(test.id == 0 || !test.id) {      
-        const response = await axios.post(`test/v1/tests/`, pureTest)
-        test.id = response.data.id
-        result.entity = test
-      } else if(test.isEdited) {        
-        await axios.put(`test/v1/tests/${test.id}/`, pureTest)
-        test.isEdited = false
+    try { 
+      validateTest(test)
+      switch (test.action) {
+        case ActionsEnum.CREATE:          
+          test = await createTest(test)
+          test.action = ActionsEnum.NONE        
+          commit('addTest',test)
+          break;
+        case ActionsEnum.UPDATE:        
+          await updateTest(test)
+          commit('updateTest',test)   
+          test.action = ActionsEnum.NONE         
+          break;
+        case ActionsEnum.DELETE:
+          await deleteTest(test.id)
+          commit('deleteTest',test.id)
+          test.action = ActionsEnum.NONE 
+          break;
+        default:
+          break;        
       }
-      test.questions = await dispatch('questions/updateRange', {testId: test.id, questions: test.questions}, {root:true})
+      const questions = await dispatch('questions/manageRange', {testId: test.id, questions: test.questions}, {root:true})     
+      test.questions = questions
       result.success()
     }
     catch (err) {
       const errors = errorParser(err)
       result.addErrors(errors)
     }
-    finally {     
-      return result
-    }
-  },
-  async delete(_,id) {
-    const result = new OperationResult()
-    try {
-      await axios.delete(`test/v1/tests/${id}`)
-      result.success()
-    }
-    catch (err) {
-      const errors = errorParser(err)
-      result.addErrors(errors)
-    }
-    finally {     
+    finally {
+      result.entity = test
       return result
     }
   }
 }
 
+const mutations = {
+  setTests(state, tests) {
+    state.tests = tests
+  },
+  deleteTest(state, id) {
+    const i = state.tests.findIndex(t=>{
+      return t.id == id
+    })
+    if(i>=0)
+      state.tests.splice(i,1)
+  },
+  updateTest(state, test) {
+    const i = state.tests.findIndex(t=>{
+      return t.id == test.id
+    })
+    if(i>=0) {
+      state.tests[i].id = test.id
+      state.tests[i].title = test.title
+      state.tests[i].description = test.description
+    }
+  },
+  addTest(state,test) {
+    if(state.tests.length > 0)
+      state.tests.push(test)
+  }
+}
+
 export default {
   namespaced: true,
-  actions
+  actions,
+  state, 
+  mutations
 }

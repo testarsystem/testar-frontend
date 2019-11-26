@@ -6,7 +6,7 @@
                     <span>Question {{index+1}}</span> 
                     <i class="material-icons small" 
                         @click="deleteQuestion" 
-                        :class="{ 'blue-grey-text text-lighten-3' : (!enableDelete || disable) }"
+                        :class="{ 'blue-grey-text text-lighten-3' : !enableDelete }"
                         v-if="enableEdit"
                     >
                         close
@@ -17,7 +17,7 @@
                         placeholder="question" 
                         class="materialize-textarea" 
                         v-model="value.text"
-                        :disabled="!enableEdit || disable"
+                        :disabled="!enableEdit"
                         maxlength="200"
                         @change="inputOnChangeListener">
                     </textarea>
@@ -32,7 +32,6 @@
                         @deleteAnswer="deleteOption"
                         :enableDelete="enableDeleteAnswer"
                         :enableEdit="enableEdit"
-                        :disableById="disableById"
                     />
                 </div>  
                 <div class="add-answer-button" v-if="enableEdit">
@@ -45,6 +44,7 @@
 
 <script>
 import Answer from '@/components/Answer.vue'
+import ActionsEnum from '../utils/ActionsEnum'
 export default {
     name: 'question',
     components: {
@@ -63,10 +63,6 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
-        },
-        disableById: {
-            type: Boolean,
-            default: false
         }
     },
     methods: {
@@ -81,15 +77,13 @@ export default {
             this.$emit('deleteOption',this.index, answerIndex)
         },
         inputOnChangeListener() {
-            this.value.isEdited = true
+            if(this.value.action != ActionsEnum.CREATE)
+                this.value.action = ActionsEnum.UPDATE
         }
     },
     computed: {
         enableDeleteAnswer() {
             return this.value.answers.length > 2
-        },
-        disable() {
-            return this.disableById && this.value.id > 0
         }
     }
 }

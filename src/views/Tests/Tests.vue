@@ -27,6 +27,7 @@ import TestsCollection from '@/components/TestsCollection.vue';
 import Alert from '@/components/Alert.vue';
 import Flash from 'js-flash-message'
 import Loader from '@/components/Loader.vue'
+import ActionsEnum from '../../utils/ActionsEnum'
 
 export default {
   name: "tests",
@@ -37,11 +38,15 @@ export default {
   },
   data() {
     return {
-      tests: [],
       errors: [],
       successes: [],
       competition: {},
       isLoading: false
+    }
+  },
+  computed: {
+    tests() {
+      return this.$store.state.tests.tests
     }
   },
   methods: {
@@ -52,9 +57,7 @@ export default {
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
-      })
-      if(res.entity.results)
-        this.tests = [...res.entity.results]   
+      })  
     },
     startBtnHandler(id) {
       this.$router.push(`/tests/${id}/competition`)
@@ -77,7 +80,7 @@ export default {
       if(conf == false)
         return
       this.isLoading = true
-      const res = await this.$store.dispatch('tests/delete', id)
+      const res = await this.$store.dispatch('tests/manage', {id, action: ActionsEnum.DELETE})
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);

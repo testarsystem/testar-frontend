@@ -2,10 +2,11 @@
   <div class="create-test">
     <h3>New test</h3>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
-    <div class="col s12">
+    <Loader v-if="isLoading"/>
+    <div class="col s12" v-else>
       <div class="row">
         <div class="input-field col s12">
-          <input id="title" type="text" v-model="test.title" maxlength="50" :disabled="enableEdit" />
+          <input id="title" type="text" v-model="test.title" maxlength="50" @change="inputOnChangeListener"/>
           <label for="title">Title</label>
         </div>
       </div>
@@ -15,14 +16,15 @@
             id="description"
             class="materialize-textarea"
             v-model="test.description"
-            :disabled="enableEdit"
+            @change="inputOnChangeListener"
           ></textarea>
           <label for="description">Description</label>
         </div>
       </div>
     </div>
-    <h5>Total: {{questions.length}}</h5>
+    <h5 v-if="!isLoading">Total: {{questions.length}}</h5>
     <Test
+      v-if="!isLoading"
       :questions="questions"
       :enableDeleteQuestion="enableDeleteQuestion"
       :enableEdit="enableEditTest"
@@ -30,9 +32,8 @@
       :deleteQuestion="deleteQuestion"
       :addOption="addOption"
       :deleteOption="deleteOption"
-      :disableById="disableById"
     />
-    <div class="create-test-button">
+    <div class="create-test-button" v-if="!isLoading">
       <button class="btn btn-large" id="CreateTestBtn" @click="createTestBtnHandler">Create test</button>
     </div>
   </div>
@@ -42,70 +43,80 @@
 import Test from "@/components/Test.vue";
 import Alert from "@/components/Alert.vue";
 import Flash from "js-flash-message";
+import ActionsEnum from '../../utils/ActionsEnum'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: "newTest",
   components: {
     Test,
-    Alert
+    Alert,
+    Loader
   },
   data() {
     return {
       test: {
         id: 0,
         title: "",
-        description: ""
+        description: "",
+        action: ActionsEnum.CREATE,
       },
       questions: [
         {
           id: 0,
           text: "",
+          action: ActionsEnum.CREATE,
           answers: [
             {
               id: 0,
               text: "",
-              correct: false
+              correct: false,
+              action: ActionsEnum.CREATE,
             },
             {
               id: 0,
               text: "",
-              correct: false
+              correct: false,
+              action: ActionsEnum.CREATE,
             }
           ]
         }
       ],
-      errors: []
+      errors: [],
+      deletedQuestions: [],
+      isLoading: false
     };
   },
   computed: {
     enableDeleteQuestion() {
       return this.questions.length > 1;
     },
-    disableById() {
-      return true;
-    },
-    enableEdit() {
-      return this.disableById && this.test.id > 0;
-    },
     enableEditTest() {
       return true;
     }
   },
   methods: {
+    inputOnChangeListener() {
+      if(this.test.action != ActionsEnum.CREATE)
+        this.test.action = ActionsEnum.UPDATE
+    },
     addQuestion() {
       this.questions.push({
         id: 0,
         text: "",
+        action: ActionsEnum.CREATE,
         answers: [
           {
             id: 0,
             text: "",
-            correct: false
+            correct: false,
+            action: ActionsEnum.CREATE,
           },
           {
             id: 0,
             text: "",
-            correct: false
+            correct: false,
+            action: ActionsEnum.CREATE,
           }
         ]
       });
@@ -117,15 +128,22 @@ export default {
           toDelete = confirm(
             `Are you sure you want to delete the Question ${questionIndex + 1}?`
           );
-        else toDelete = true;
-        if (toDelete) this.questions.splice(questionIndex, 1);
+        else toDelete = true
+        if (toDelete) {
+          if(!this.questions[questionIndex].action || this.questions[questionIndex].action == ActionsEnum.NONE || this.questions[questionIndex].action == ActionsEnum.UPDATE) {            
+            this.questions[questionIndex].action = ActionsEnum.DELETE
+            this.deletedQuestions.push({...this.questions[questionIndex]})
+          }
+          this.questions.splice(questionIndex, 1);
+        }
       }
     },
     addOption(questionIndex) {
       this.questions[questionIndex].answers.push({
         id: 0,
         text: "",
-        checked: false
+        checked: false,
+        action: ActionsEnum.CREATE
       });
     },
     deleteOption(questionIndex, answerIndex) {
@@ -137,8 +155,18 @@ export default {
               1} of Question ${questionIndex + 1}?`
           );
         else toDelete = true;
-        if (toDelete)
-          this.questions[questionIndex].answers.splice(answerIndex, 1);
+        if (toDelete) {
+          if(!this.questions[questionIndex].answers[answerIndex].action || this.questions[questionIndex].answers[answerIndex].action == ActionsEnum.NONE || this.questions[questionIndex].answers[answerIndex].action == ActionsEnum.UPDATE) {            
+            this.questions[questionIndex].answers[answerIndex].action = ActionsEnum.DELETE
+            let i = this.deletedQuestions.findIndex(q=> {
+              return q.id == this.questions[questionIndex].id
+            })
+            if(i<0)
+              i = this.deletedQuestions.push({id: this.questions[questionIndex].id, answers: []}) - 1
+            this.deletedQuestions[i].answers.push(this.questions[questionIndex].answers[answerIndex])
+          }
+          this.questions[questionIndex].answers.splice(answerIndex, 1)
+        }
       }
     },
     isOptionEmpty(questionIndex, answerIndex) {
@@ -156,14 +184,28 @@ export default {
       return areEmpty;
     },
     async createTestBtnHandler() {
+      this.isLoading = true
       this.errors = [];
-      const res = await this.$store.dispatch("tests/create", {
-        title: this.test.title,
-        description: this.test.description,
+      this.deletedQuestions.forEach(d=>{
+        const i = this.questions.findIndex(q=>{
+          return q.id == d.id
+        })
+        if(i >= 0) {
+          this.questions[i].answers = [...this.questions[i].answers,...d.answers]
+        }
+        else {
+          this.questions.push(d)
+        }
+      })
+      this.deletedQuestions = []
+      const res = await this.$store.dispatch("tests/manage", {
+        ...this.test,
         questions: this.questions
       });
       this.test.id = res.entity.id;
       this.questions = res.entity.questions;
+      this.test.action = res.entity.action
+      this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
       });

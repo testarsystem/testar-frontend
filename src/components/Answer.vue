@@ -4,18 +4,18 @@
             placeholder="option" 
             type="text" 
             v-model="value.text" 
-            :disabled="!enableEdit || disable" 
+            :disabled="!enableEdit" 
             maxlength="50"
             @change="inputOnChangeListener">
         <label>
             <input 
                 type="checkbox" v-model="value.correct" 
-                :disabled="disable" @change="inputOnChangeListener"/>
+                @change="inputOnChangeListener"/>
             <span></span>
         </label>
         <i 
             class="material-icons" @click="deleteAnswer" 
-            :class="{ 'blue-grey-text text-lighten-3' : (!enableDelete || disable) }"
+            :class="{ 'blue-grey-text text-lighten-3' : !enableDelete }"
             v-if="enableEdit"
         >
             delete
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import ActionsEnum from '../utils/ActionsEnum'
 export default {
     name: 'answer',
     props: {
@@ -39,10 +40,6 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
-        },
-        disableById: {
-            type: Boolean,
-            default: false
         }
     },
     methods: {
@@ -51,12 +48,8 @@ export default {
                 this.$emit('deleteAnswer',this.index)
         },
         inputOnChangeListener() {
-            this.value.isEdited = true
-        }
-    },
-    computed: {
-        disable() {
-            return this.disableById && this.value.id > 0
+            if(this.value.action != ActionsEnum.CREATE)
+                this.value.action = ActionsEnum.UPDATE
         }
     }
 }
