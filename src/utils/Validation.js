@@ -1,4 +1,19 @@
 import ActionsEnum from './ActionsEnum'
+import {isTime} from './DateUtils'
+
+export const validateCompetition = (competition) => {
+  let errors = []
+  if(!competition.title || competition.title.length < 1)
+    errors.push(new Error('The title of competition can\'t be empty'))
+  if(!competition.start_time || competition.start_time.length < 1)
+    errors.push(new Error('The start time of competition can\'t be empty'))
+  if(!competition.finish_time || competition.finish_time.length < 1)
+    errors.push(new Error('The finish time of competition can\'t be empty'))
+  if(!isTime(competition.duration))
+    errors.push(new Error('Duration has wrong format. Use one of these formats instead: hh:mm[:ss]'))
+  if(errors.length > 0) 
+    throw errors
+}
 
 export const validateTest = (test) => {
   if(test.action == ActionsEnum.DELETE)

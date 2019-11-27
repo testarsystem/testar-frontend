@@ -25,7 +25,6 @@ import CompetitionsCollection from '@/components/CompetitionsCollection.vue'
 import Alert from '@/components/Alert.vue'
 import Loader from '@/components/Loader.vue'
 import Flash from 'js-flash-message'
-import {getDateString} from '../../utils/DateUtils'
 
 export default {
   name: "competitions",
@@ -36,28 +35,25 @@ export default {
   },
   data() {
     return {
-      competitions: [],
       errors: [],
       successes: [],
       isLoading: false
+    }
+  },
+  computed: {
+    competitions() {
+      return this.$store.state.competitions.myCompetitions
     }
   },
   methods: {
     async getCompetitions() {
       this.clearAlerts()
       this.isLoading = true
-      const res = await this.$store.dispatch("competitions/getAll")
+      const res = await this.$store.dispatch("competitions/getMyAll")
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
-      })
-      if(res.entity.results)
-        this.competitions = [...res.entity.results]
-      this.competitions.forEach( competition => {
-        competition.created = getDateString(competition.created)
-        competition.start_time = getDateString(competition.start_time)
-        competition.finish_time = getDateString(competition.finish_time)
-      })     
+      })  
     },
     isLinkEnabled() {
       return true

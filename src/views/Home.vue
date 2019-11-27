@@ -31,10 +31,14 @@ export default {
   },
   data() {
     return {
-      competitions: [],
       errors: [],
       successes: [],
       isLoading: false
+    }
+  },
+  computed: {
+    competitions() {
+      return this.$store.state.competitions.competitions
     }
   },
   methods: {
@@ -45,14 +49,7 @@ export default {
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
-      })
-      if(res.entity.results)
-        this.competitions = [...res.entity.results]
-      this.competitions.forEach( competition => {
-        competition.created = getDateString(competition.created)
-        competition.start_time = getDateString(competition.start_time)
-        competition.finish_time = getDateString(competition.finish_time)
-      })     
+      })    
     },
     isBtnEnabled({start_time, finish_time}) {
       return Date.now() < new Date(finish_time)

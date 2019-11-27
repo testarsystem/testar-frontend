@@ -1,30 +1,23 @@
 import axios from '../../axios'
 import errorParser from '../ErrorParser'
 import OperationResult from '../OperationResult'
-import {isTime} from '../../utils/DateUtils'
+import {validateCompetition} from '../../utils/Validation'
+import {getDateString} from '../../utils/DateUtils'
 
-const validateCompetition = (competition) => {
-  let errors = []
-  if(!competition.title || competition.title.length < 1)
-    errors.push(new Error('The title of competition can\'t be empty'))
-  if(!competition.start_time || competition.start_time.length < 1)
-    errors.push(new Error('The start time of competition can\'t be empty'))
-  if(!competition.finish_time || competition.finish_time.length < 1)
-    errors.push(new Error('The finish time of competition can\'t be empty'))
-  if(!isTime(competition.duration))
-    errors.push(new Error('Duration has wrong format. Use one of these formats instead: hh:mm[:ss]'))
-  if(errors.length > 0) 
-    throw errors
+const state = {
+  myCompetitions: [],
+  competitions: []
 }
 
 const actions = {
-  async create({dispatch}, competition) {
+  async create({commit}, competition) {
     const result = new OperationResult()
     result.entity = competition
     try {
       validateCompetition(competition)      
       const response = await axios.post(`competition/v1/competitions/`, competition)
-      result.entity = response.data    
+      result.entity = response.data  
+      commit('addMyCompetition',result.entity)  
       result.success()
     }
     catch (err) {
@@ -35,11 +28,44 @@ const actions = {
       return result
     }
   },
-  async getAll() {
+  async getAll({state,commit}) {
     const result = new OperationResult()
     try {
-      const response = await axios.get(`competition/v1/competitions/`)
+      if(state.competitions.length < 1) {
+        const response = await axios.get(`competition/v1/competitions/`)
+        commit('setCompetitions',response.data.results) 
+      }
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async getMyAll({state,commit}) {
+    const result = new OperationResult()
+    try {
+      if(state.myCompetitions.length < 1) {
+        const response = await axios.get(`competition/v1/competitions/`)
+        commit('setMyCompetitions',response.data.results) 
+      }
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async update({commit},competition) {
+    const result = new OperationResult()
+    try {
+      const response = await axios.put(`competition/v1/competitions/${competition.id}/`,competition)
       result.entity = response.data
+      commit('updateMyCompetition',result.entity) 
     }
     catch (err) {
       const errors = errorParser(err)
@@ -52,7 +78,8 @@ const actions = {
   async delete(_,id) {
     const result = new OperationResult()
     try {
-      await axios.delete(`competition/v1/competitions/${id}`)
+      await axios.delete(`competition/v1/competitions/${id}/`)
+      commit('deleteMyCompetition',id) 
       result.success()
     }
     catch (err) {
@@ -65,7 +92,46 @@ const actions = {
   }
 }
 
+const mutations = {
+  setMyCompetitions(state,competitions) {
+    competitions.forEach( competition => {
+      competition.created = getDateString(competition.created)
+      competition.start_time = getDateString(competition.start_time)
+      competition.finish_time = getDateString(competition.finish_time)
+    })
+    state.myCompetitions = competitions
+  }, 
+  setCompetitions(state,competitions) {
+    competitions.forEach( competition => {
+      competition.created = getDateString(competition.created)
+      competition.start_time = getDateString(competition.start_time)
+      competition.finish_time = getDateString(competition.finish_time)
+    })
+    state.competitions = competitions
+  },
+  addMyCompetitions(state,competition) {
+    if(state.myCompetitions.length > 0)
+      state.myCompetitions.push(competition)
+  },
+  updateMyCompetition(state,competition) {
+    const i = state.myCompetitions.findIndex(c=>{
+      return c.id == competition.id
+    })
+    if(i>=0)
+      state.myCompetitions[i] = competition
+  },
+  deleteMyCompetition(state,id) {
+    const i = state.myCompetitions.findIndex(c=>{
+      return c.id == id
+    })
+    if(i>=0)
+      state.myCompetitions.splice(i,1)
+  }
+}
+
 export default {
   namespaced: true,
-  actions
+  actions,
+  state,
+  mutations
 }

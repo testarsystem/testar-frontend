@@ -2,7 +2,7 @@ import axios from '../../axios'
 import errorParser from '../ErrorParser'
 import OperationResult from '../OperationResult'
 import ActionsEnum from '../../utils/ActionsEnum'
-import {validateTest} from '../../utils/TestValidation'
+import {validateTest} from '../../utils/Validation'
 
 const state = {
   tests: []
