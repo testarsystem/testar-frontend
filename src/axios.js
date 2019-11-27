@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import router from './router'
+import router from './router'
 
 const url = 'http://104.248.241.155:5000/';
 
@@ -20,20 +20,17 @@ baseInstance.interceptors.request.use( config => {
 baseInstance.interceptors.response.use( response => {
     return response;
 }, error => {
-    // if(error.response)
-    //   if (error.response.status === 404) {
-    //     router.replace('/notfound');
-    //   }
-    //   else if (error.response.status === 403) {
-    //     router.replace('/forbidden');
-    //   }
-    //   else if (error.response.status === 500) {
-    //     router.replace('/servererror');
-    //   }
-    if(error.response)
-      return Promise.reject(error.response.data);
+  if(error.response) {
+    if (error.response.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      router.replace('/login');
+    }
     else
-      return Promise.reject(error);
+      return Promise.reject(error.response.data);
+  }
+  else
+    return Promise.reject(error);
 });
 
 export default baseInstance;
