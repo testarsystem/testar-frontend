@@ -70,12 +70,12 @@ export default {
       isLoading: false
     }
   },
-  mounted() {
+  async mounted() {
+    await this.getById(this.$route.params.id)
     let elems = document.querySelectorAll('.datepicker');
     M.Datepicker.init(elems);
     elems = document.querySelectorAll('.timepicker');
     M.Timepicker.init(elems,{twelveHour: false});
-    this.getById(this.$route.params.id)
   },
   methods: {
     async getById(id) {
@@ -92,7 +92,7 @@ export default {
     },
     async createCompBtnHandler() {
       this.errors = []
-      this.isLoading = true
+      this.isLoading = true     
       this.competition.start_time = toISODate(this.$refs['startDate'].value + ' ' + this.$refs['startTime'].value)
       this.competition.finish_time = toISODate(this.$refs['finishDate'].value + ' ' + this.$refs['finishTime'].value)
       const res = await this.$store.dispatch('competitions/create', this.competition)

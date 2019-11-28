@@ -28,7 +28,7 @@
       <p class="secondary">
         {{competition.description}}
       </p> 
-      <button class="btn btn-small" v-if="isBtnEnabled(competition)" @click="$emit('btnHandler', competition.id)">{{btnText}}</button>            
+      <button class="btn btn-small" v-if="isBtnEnabled(competition)" @click="$emit('btnHandler', competition)">{{btnText}}</button>            
     </li>
   </ul> 
 </template>

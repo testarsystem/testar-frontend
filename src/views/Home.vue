@@ -9,6 +9,7 @@
       v-if="competitions.length > 0 && !isLoading"
       :isBtnEnabled="isBtnEnabled"
       btnText="Participate"
+      @btnHandler="btnHandler"
     />
     <div class="substrate" v-if="competitions.length < 1 && !isLoading">
       Competitions list is empty
@@ -53,6 +54,23 @@ export default {
     },
     isBtnEnabled({start_time, finish_time}) {
       return Date.now() < new Date(finish_time)
+    },
+    async btnHandler(competition) {
+      this.errors = []
+      this.isLoading = true
+      console.log(competition.id)
+      let res = await this.$store.dispatch("competitions/join",competition.id)
+      if(res.errors.length < 1 && Date.now() >= new Date(competition.start_time)) {
+        this.$router.push(`/competitions/${competition.id}`)
+      } else {
+        this.successes.push('You were successfully registrated for this competition')
+        this.successes.push(`You can participate it on ${competition.start_time}`)
+      }       
+      this.isLoading = false
+      res.errors.forEach(item => {
+        this.errors.push(item.message);
+      }) 
+
     }
   },
   mounted() {

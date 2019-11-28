@@ -10,6 +10,7 @@
         <label>
             <input 
                 type="checkbox" v-model="value.correct" 
+                :disabled="!enableCheck"
                 @change="inputOnChangeListener"/>
             <span></span>
         </label>
@@ -40,6 +41,10 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
+        },
+        enableCheck: {
+            type: Boolean,
+            default: true
         }
     },
     methods: {
@@ -50,6 +55,7 @@ export default {
         inputOnChangeListener() {
             if(this.value.action != ActionsEnum.CREATE)
                 this.value.action = ActionsEnum.UPDATE
+            this.$emit('checkAnswer',this.value.id,this.value.submit)
         }
     }
 }

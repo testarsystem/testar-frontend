@@ -72,7 +72,7 @@ export default {
       return true
     },
     linkHandler(id) {
-      this.$router.push(`/tests/${id}`)
+      this.$router.push(`/tests/${id}/edit`)
     },
     async deleteTestBtnHandler(id) {
       this.clearAlerts()

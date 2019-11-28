@@ -32,6 +32,8 @@
                         @deleteAnswer="deleteOption"
                         :enableDelete="enableDeleteAnswer"
                         :enableEdit="enableEdit"
+                        :enableCheck="enableCheck"
+                        @checkAnswer="checkOption"
                     />
                 </div>  
                 <div class="add-answer-button" v-if="enableEdit">
@@ -63,6 +65,10 @@ export default {
         enableEdit: {
             type: Boolean,
             default: false
+        },
+        enableCheck: {
+            type: Boolean,
+            default: true
         }
     },
     methods: {
@@ -79,6 +85,9 @@ export default {
         inputOnChangeListener() {
             if(this.value.action != ActionsEnum.CREATE)
                 this.value.action = ActionsEnum.UPDATE
+        },
+        checkOption(answerIndex,submit){
+            this.$emit('checkOption',this.value.id, answerIndex, submit)
         }
     },
     computed: {

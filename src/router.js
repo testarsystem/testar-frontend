@@ -37,8 +37,13 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/tests/:id',
+      path: '/tests/:id/edit',
       component: () => import('./views/Tests/EditTest.vue'),
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/competitions/:id',
+      component: () => import('./views/Competitions/Competition.vue'),
       meta: {requiresAuth: true}
     },
     {

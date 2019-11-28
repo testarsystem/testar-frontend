@@ -57,4 +57,8 @@ export default {
 .container {
   margin-bottom: 2rem !important;
 }
+
+.test input:disabled, .test textarea:disabled {
+  color: #000 !important;
+}
 </style>
