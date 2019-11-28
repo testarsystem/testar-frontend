@@ -125,7 +125,7 @@ export default {
     async getById(id) {
       this.clearAlerts();
       this.isLoading = true;
-      let res = await this.$store.dispatch("competitions/getById", id);
+      let res = await this.$store.dispatch("competitions/getByIdWithTest", id);
       if (res.errors.length < 1) {
         res.errors = await this.start(
           id,

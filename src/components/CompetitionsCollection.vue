@@ -2,7 +2,7 @@
   <ul class="competitions-collection collection">
     <li class="collection-item avatar" v-for="competition in competitions" :key="competition.id">  
       <div class="title">   
-        <a :class="{link: isLinkEnabled()}" class="title-text" @click="$emit('linkHandler')">
+        <a :class="{link: isLinkEnabled()}" class="title-text" @click="$emit('linkHandler',competition.id)">
           {{competition.title}}
         </a>
         <!-- <button class="btn btn-small" v-if="isBtnEnabled(competition)" @click="$emit('btnHandler')">{{btnText}}</button>        -->

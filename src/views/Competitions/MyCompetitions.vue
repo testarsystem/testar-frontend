@@ -11,7 +11,7 @@
       :isTitleBtnEnabled="isTitleBtnEnabled"
       :isLinkEnabled="isLinkEnabled"
       btnText="Delete"
-      @linkHandler="true"
+      @linkHandler="linkHandler"
       @titleBtnHandler="deleteCompetitionBtnHandler"
     />
     <div class="substrate" v-if="competitions.length < 1 && !isLoading">
@@ -57,6 +57,9 @@ export default {
     },
     isLinkEnabled() {
       return true
+    },
+    linkHandler(id) {
+      this.$router.push(`/competitions/${id}/details`)
     },
     isTitleBtnEnabled({start_time}) {
       return Date.now() < new Date(start_time)

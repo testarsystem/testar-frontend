@@ -64,6 +64,23 @@ const actions = {
   async getById(_,id) {
     const result = new OperationResult()
     try {
+      let response = await axios.get(`competition/v1/competitions/${id}/`)     
+      result.entity = response.data
+      result.entity.created = getDateString(result.entity.created)
+      result.entity.start_time = getDateString(result.entity.start_time)
+      result.entity.finish_time = getDateString(result.entity.finish_time)
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async getByIdWithTest(_,id) {
+    const result = new OperationResult()
+    try {
       let response = await axios.get(`public/v1/competitions/${id}/`)     
       result.entity = response.data
       response = await axios.get(`public/v1/competitions/${id}/test`)
@@ -71,6 +88,29 @@ const actions = {
       result.entity.created = getDateString(result.entity.created)
       result.entity.start_time = getDateString(result.entity.start_time)
       result.entity.finish_time = getDateString(result.entity.finish_time)
+    }
+    catch (err) {
+      const errors = errorParser(err)
+      result.addErrors(errors)
+    }
+    finally {     
+      return result
+    }
+  },
+  async getByIdWithParticipants(_,id) {
+    const result = new OperationResult()
+    try {
+      let response = await axios.get(`competition/v1/competitions/${id}/`)     
+      result.entity = response.data
+      response = await axios.get(`competition/v1/competitions/${id}/participants`)
+      result.entity = {...result.entity,...{participants:response.data.results}}
+      result.entity.created = getDateString(result.entity.created)
+      result.entity.start_time = getDateString(result.entity.start_time)
+      result.entity.finish_time = getDateString(result.entity.finish_time)
+      result.entity.participants.forEach((element,i) => {
+        result.entity.participants[i].start_time = getDateString(element.start_time)
+        result.entity.participants[i].end_time = getDateString(element.end_time)
+      });
     }
     catch (err) {
       const errors = errorParser(err)
