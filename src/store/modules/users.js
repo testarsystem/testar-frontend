@@ -11,7 +11,7 @@ const state = {
 const actions = {
   async loginUser({ commit }, authData) {
     try {
-      const response = await axios.post(`auth/v1/login/`, authData);
+      const response = await axios.post(`auth/v1/login/`, authData);      
       let token = response.data.token;
       if (token) {
         commit('setToken', token)

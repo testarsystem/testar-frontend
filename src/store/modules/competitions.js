@@ -3,7 +3,6 @@ import errorParser from '../ErrorParser'
 import OperationResult from '../OperationResult'
 import {validateCompetition} from '../../utils/Validation'
 import {getDateString} from '../../utils/DateUtils'
-import { join } from 'path'
 
 const state = {
   myCompetitions: [],
@@ -36,6 +35,7 @@ const actions = {
         const response = await axios.get(`public/v1/competitions/`)
         commit('setCompetitions',response.data.results) 
       }
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -52,6 +52,7 @@ const actions = {
         const response = await axios.get(`competition/v1/competitions/`)
         commit('setMyCompetitions',response.data.results) 
       }
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -69,6 +70,7 @@ const actions = {
       result.entity.created = getDateString(result.entity.created)
       result.entity.start_time = getDateString(result.entity.start_time)
       result.entity.finish_time = getDateString(result.entity.finish_time)
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -88,6 +90,7 @@ const actions = {
       result.entity.created = getDateString(result.entity.created)
       result.entity.start_time = getDateString(result.entity.start_time)
       result.entity.finish_time = getDateString(result.entity.finish_time)
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -111,6 +114,7 @@ const actions = {
         result.entity.participants[i].start_time = getDateString(element.start_time)
         result.entity.participants[i].end_time = getDateString(element.end_time)
       });
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -126,6 +130,7 @@ const actions = {
       const response = await axios.put(`competition/v1/competitions/${competition.id}/`,competition)
       result.entity = response.data
       commit('updateMyCompetition',result.entity) 
+      result.success()
     }
     catch (err) {
       const errors = errorParser(err)
@@ -244,15 +249,21 @@ const mutations = {
     state.competitions = competitions
   },
   addMyCompetition(state,competition) {
-    if(state.myCompetitions.length > 0)
+    if(state.myCompetitions.length > 0){
+      competition.start_time = getDateString(competition.start_time)
+      competition.finish_time = getDateString(competition.finish_time)
       state.myCompetitions.push(competition)
+    }
   },
   updateMyCompetition(state,competition) {
     const i = state.myCompetitions.findIndex(c=>{
       return c.id == competition.id
     })
-    if(i>=0)
+    if(i>=0) {
+      competition.start_time = getDateString(competition.start_time)
+      competition.finish_time = getDateString(competition.finish_time)
       state.myCompetitions[i] = competition
+    }
   },
   deleteMyCompetition(state,id) {
     const i = state.myCompetitions.findIndex(c=>{

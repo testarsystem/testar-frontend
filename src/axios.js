@@ -23,8 +23,11 @@ baseInstance.interceptors.response.use( response => {
   if(error.response) {
     if (error.response.status === 401) {
       localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      router.replace('/login');
+      localStorage.removeItem('user')     
+      if(router.currentRoute.path != '/login')
+        router.replace('/login');
+      else
+        return Promise.reject(error.response.data);
     }
     else
       return Promise.reject(error.response.data);

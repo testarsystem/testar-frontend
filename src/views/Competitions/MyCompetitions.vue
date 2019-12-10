@@ -5,6 +5,7 @@
     <Loader v-if="isLoading"/>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
+    <Alert type="warning" v-for="warning in warnings" :key="warning">{{warning}}</Alert>
     <CompetitionsCollection 
       :competitions="competitions" 
       v-if="competitions.length > 0 && !isLoading"
@@ -12,7 +13,8 @@
       :isLinkEnabled="isLinkEnabled"
       btnText="Delete"
       @linkHandler="linkHandler"
-      @titleBtnHandler="deleteCompetitionBtnHandler"
+      @editBtnHandler="editCompetitionBtnHandler"
+      @deleteBtnHandler="deleteCompetitionBtnHandler"
     />
     <div class="substrate" v-if="competitions.length < 1 && !isLoading">
       Competitions list is empty
@@ -37,6 +39,7 @@ export default {
     return {
       errors: [],
       successes: [],
+      warnings: [],
       isLoading: false
     }
   },
@@ -64,6 +67,9 @@ export default {
     isTitleBtnEnabled({start_time}) {
       return Date.now() < new Date(start_time)
     },
+    editCompetitionBtnHandler(id) {
+      this.$router.push({path: `/competitions/${id}/edit`, query: { redirect: this.$router.currentRoute.path }})
+    },
     async deleteCompetitionBtnHandler(id) {
       this.clearAlerts()
       const conf = confirm('Are you sure you want to delete this competition?')
@@ -82,6 +88,7 @@ export default {
     clearAlerts() {
       this.errors = []
       this.successes = []
+      this.warnings = []
     }
   },
   mounted() {
@@ -90,6 +97,10 @@ export default {
     flashes.forEach(flash=>{
       if(flash.type == 'success')
         this.successes.push(flash.message)
+      else if(flash.type == 'danger')
+        this.errors.push(flash.message)
+      else if(flash.type == 'warning')
+        this.warnings.push(flash.message)
     })
   }
 };

@@ -62,6 +62,12 @@ const router = new Router({
       name: 'competitionDetails',
       component: () => import('./views/Competitions/CompetitionDetails.vue'),
       meta: {requiresAuth: true}
+    },
+    {
+      path: '/competitions/:id/edit',
+      name: 'editCompetition',
+      component: () => import('./views/Competitions/EditCompetition.vue'),
+      meta: {requiresAuth: true}
     }
   ]
 })

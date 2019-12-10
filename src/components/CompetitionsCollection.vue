@@ -7,9 +7,16 @@
         </a>
         <!-- <button class="btn btn-small" v-if="isBtnEnabled(competition)" @click="$emit('btnHandler')">{{btnText}}</button>        -->
         <i 
+          class="material-icons title-btn ml-auto" 
+          v-if="isTitleBtnEnabled(competition)" 
+          @click="$emit('editBtnHandler',competition.id)"
+        >
+          edit
+        </i>
+        <i 
           class="material-icons title-btn" 
           v-if="isTitleBtnEnabled(competition)" 
-          @click="$emit('titleBtnHandler',competition.id)"
+          @click="$emit('deleteBtnHandler',competition.id)"
         >
           delete
         </i>
@@ -68,8 +75,11 @@ export default {
 }
 
 .competitions-collection .title-btn{
-  margin-left: auto;
   color: var(--grey);
+}
+
+.competitions-collection .ml-auto{
+  margin-left: auto;
 }
 
 .competitions-collection .title-text {
