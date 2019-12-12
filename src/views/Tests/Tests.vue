@@ -14,7 +14,8 @@
       btnText="StartCompetition" 
       @btnHandler="startBtnHandler"
       @linkHandler="linkHandler"
-      @titleBtnHandler="deleteTestBtnHandler"
+      @deleteBtnHandler="deleteTestBtnHandler"
+      @editBtnHandler="editTestBtnHandler"
       />
     <div class="substrate" v-if="!isLoading && tests.length < 1">
       Tests list is empty
@@ -72,7 +73,10 @@ export default {
       return true
     },
     linkHandler(id) {
-      this.$router.push(`/tests/${id}/edit`)
+      this.$router.push(`/tests/${id}/details`)
+    },
+    editTestBtnHandler(id) {
+      this.$router.push({path: `/tests/${id}/edit`, query: { redirect: this.$router.currentRoute.path }})
     },
     async deleteTestBtnHandler(id) {
       this.clearAlerts()

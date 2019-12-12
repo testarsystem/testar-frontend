@@ -42,13 +42,19 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
-      path: '/competitions/:id',
-      component: () => import('./views/Competitions/Competition.vue'),
+      path: '/tests/:id/details',
+      name: 'testDetails',
+      component: () => import('./views/Tests/TestDetails.vue'),
       meta: {requiresAuth: true}
     },
     {
       path: '/tests/:id/competition',
       component: () => import('./views/Competitions/CreateCompetition.vue'),
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/competitions/:id',
+      component: () => import('./views/Competitions/Competition.vue'),
       meta: {requiresAuth: true}
     },
     {

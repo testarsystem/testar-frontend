@@ -3,7 +3,7 @@
     <div class="col s8 offset-s2">
       <div class="title">
         <h3>Edit competition</h3>
-        <button class="btn btn-small" @click="editCompBtnHandler">cancel</button>
+        <button class="btn btn-small" @click="cancelCompBtnHandler">cancel</button>
       </div> 
       <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert> 
       <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
@@ -109,7 +109,7 @@ export default {
     },
     async updateCompBtnHandler() {
       this.clearAlerts()
-      const conf = confirm('Are you sure you want to update the competition?')
+      const conf = confirm('Are you sure you want to update this competition?')
       if(conf == false)
         return
       this.isLoading = true 
@@ -130,7 +130,7 @@ export default {
         this.$router.push({ path: this.$route.query.redirect || "/my_competitions" })          
       }    
     },
-    editCompBtnHandler() {
+    cancelCompBtnHandler() {
       this.clearAlerts()
       const conf = confirm('Are you sure you want to cancel competition editting?')
       if(conf == true)

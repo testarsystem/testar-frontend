@@ -2,7 +2,7 @@
   <div class="edit-test">
     <div class="title">
       <h3>Edit test</h3>
-      <button class="btn btn-small" @click="deleteTestBtnHandler">delete</button>
+      <button class="btn btn-small" @click="cancelTestBtnHandler">cancel</button>
     </div>  
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
@@ -49,11 +49,9 @@
 </template>
 
 <script>
-import Test from '@/components/Test.vue';
-import Alert from '@/components/Alert.vue';
-import operationResult from '../../store/OperationResult';
-import Flash from 'js-flash-message';
-import {getDateString} from '../../utils/DateUtils'
+import Test from '@/components/Test.vue'
+import Alert from '@/components/Alert.vue'
+import Flash from 'js-flash-message'
 import Loader from '@/components/Loader.vue'
 import ActionsEnum from '../../utils/ActionsEnum'
 
@@ -185,13 +183,16 @@ export default {
       this.test.id = res.entity.id
       this.test.title = res.entity.title
       this.test.description = res.entity.description
-      this.test.created = getDateString(res.entity.created)
+      this.test.created = res.entity.created
       if(res.entity.questions)
         this.questions = res.entity.questions
       this.isLoading = false
     },
     async updateTestBtnHandler() {
       this.clearAlerts()
+      const conf = confirm('Are you sure you want to update this test?')
+      if(conf == false)
+        return
       this.isLoading = true
       this.deletedQuestions.forEach(d=>{
         const i = this.questions.findIndex(q=>{
@@ -214,30 +215,19 @@ export default {
       res.errors.forEach(item => {
         this.errors.push(item.message);
       });
-      if (res.isSuccess) {
-        this.successes.push('The test was successfully updated')
-      }
-    },
-    async deleteTestBtnHandler() {
-      this.clearAlerts()
-      const conf = confirm('Are you sure you want to delete this test?')
-      if(conf == false)
-        return
-      this.isLoading = true
-      this.test.action = ActionsEnum.DELETE
-      const res = await this.$store.dispatch('tests/manage', this.test)
-      this.test.action = ActionsEnum.NONE
-      this.isLoading = false
-      res.errors.forEach(item => {
-        this.errors.push(item.message);
-      });
-      if (res.isSuccess) {
+      if (res.isSuccess) { 
         Flash.create({
           type: "success",
-          message: "The test was deleted successfully"
+          message: "The test was updated successfully"
         });
-        this.$router.push("/tests/");
+        this.$router.push({ path: this.$route.query.redirect || "/tests" })          
       }
+    },
+    cancelTestBtnHandler() {
+      this.clearAlerts()
+      const conf = confirm('Are you sure you want to cancel test editting?')
+      if(conf == true)
+        this.$router.push({ path: this.$route.query.redirect || "/tests" })
     },
     clearAlerts() {
       this.errors = []

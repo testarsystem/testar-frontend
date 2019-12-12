@@ -3,6 +3,7 @@ import errorParser from '../ErrorParser'
 import OperationResult from '../OperationResult'
 import ActionsEnum from '../../utils/ActionsEnum'
 import {validateTest} from '../../utils/Validation'
+import {getDateString} from '../../utils/DateUtils'
 
 const state = {
   tests: []
@@ -17,7 +18,7 @@ const createTest = async (test) => {
 
 const updateTest = async (test) => {        
   const pureTest = {id:test.id, title:test.title, description:test.description}
-  await axios.put(`test/v1/tests/${id}/`, pureTest)
+  await axios.put(`test/v1/tests/${pureTest.id}/`, pureTest)
 }
 
 const deleteTest = async (id) => {
@@ -46,6 +47,7 @@ const actions = {
     try {
       const response = await axios.get(`test/v1/tests/${id}`)
       result.entity = response.data
+      result.entity.created = getDateString(result.entity.created)
     }
     catch (err) {
       const errors = errorParser(err)
