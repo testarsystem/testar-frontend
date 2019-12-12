@@ -103,7 +103,7 @@ export default {
       if(res.isSuccess) {
         Flash.create({
           type: "success",
-          message: "The competition was started successfully"
+          message: "The competition was created successfully"
         });
         this.$router.push({name: 'myCompetitions'})
       }      

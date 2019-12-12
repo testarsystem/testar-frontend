@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     async getCompetitions() {
-      this.errors = []
+      this.clearAlerts()
       this.isLoading = true
       const res = await this.$store.dispatch("competitions/getAll")
       this.isLoading = false
@@ -56,7 +56,7 @@ export default {
       return Date.now() < new Date(finish_time)
     },
     async btnHandler(competition) {
-      this.errors = []
+      this.clearAlerts()
       this.isLoading = true
       console.log(competition.id)
       let res = await this.$store.dispatch("competitions/join",competition.id)
@@ -70,7 +70,10 @@ export default {
       res.errors.forEach(item => {
         this.errors.push(item.message);
       }) 
-
+    },
+    clearAlerts() {
+      this.errors = []
+      this.successes = []
     }
   },
   mounted() {

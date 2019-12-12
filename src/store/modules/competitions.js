@@ -140,7 +140,7 @@ const actions = {
       return result
     }
   },
-  async delete(_,id) {
+  async delete({commit},id) {
     const result = new OperationResult()
     try {
       await axios.delete(`competition/v1/competitions/${id}/`)
