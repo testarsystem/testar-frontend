@@ -13,7 +13,7 @@ export default {
   },
   computed: {
     showMenu() {
-      return this.$route.name !== 'login' && this.$route.name !== 'register';
+      return this.$route.name !== 'login' && this.$route.name !== 'register' && this.$route.name !== 'notFound';
     },
     user() {
       return this.$store.state.users.user;

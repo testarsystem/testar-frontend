@@ -29,6 +29,9 @@ baseInstance.interceptors.response.use( response => {
       else
         return Promise.reject(error.response.data);
     }
+    else if (error.response.status === 404) {
+      router.replace('/not_found');
+    }
     else
       return Promise.reject(error.response.data);
   }

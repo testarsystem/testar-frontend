@@ -86,6 +86,15 @@ const router = new Router({
       name: 'editCompetition',
       component: () => import('./views/Competitions/EditCompetition.vue'),
       meta: {requiresAuth: true}
+    },
+    {
+      path: '/not_found',
+      name: 'notFound',
+      component: () => import('./views/NotFound.vue')
+    },
+    {
+      path: '*',
+      redirect: '/not_found'
     }
   ]
 })
