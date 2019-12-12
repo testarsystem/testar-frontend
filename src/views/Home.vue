@@ -39,14 +39,14 @@ export default {
   },
   computed: {
     competitions() {
-      return this.$store.state.competitions.competitions
+      return this.$store.state.publics.competitions
     }
   },
   methods: {
     async getCompetitions() {
       this.clearAlerts()
       this.isLoading = true
-      const res = await this.$store.dispatch("competitions/getAll")
+      const res = await this.$store.dispatch("publics/getAll")
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
@@ -59,7 +59,7 @@ export default {
       this.clearAlerts()
       this.isLoading = true
       console.log(competition.id)
-      let res = await this.$store.dispatch("competitions/join",competition.id)
+      let res = await this.$store.dispatch("publics/join",competition.id)
       if(res.errors.length < 1 && Date.now() >= new Date(competition.start_time)) {
         this.$router.push(`/competitions/${competition.id}`)
       } else {

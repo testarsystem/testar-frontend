@@ -30,27 +30,15 @@
       </div>
     </div>
     <Test
-      v-if="!isLoading && test.questions.length > 0 && !competition.completed"
+      v-if="!isLoading && test.questions.length > 0"
       :questions="test.questions"
       :enableDeleteQuestion="enableDeleteQuestion"
       :enableEdit="enableEditTest"
       :enableCheck="!timer.timeIsOff"
       :checkOption="submit"
     />
-    <div class="complete-button" v-if="!isLoading && !competition.completed">
+    <div class="complete-button" v-if="!isLoading">
       <button class="btn btn-large" id="CompleteBtn" @click="completeBtnHandler">Complete</button>
-    </div>
-    <div class="row test" v-if="!isLoading && completed.id">
-      <div class="col s12 card">
-        <div class="card-content">
-          <span class="card-title">Report</span>
-          <p>
-            <b>Start time:</b> {{completed.start_time}}<br>
-            <b>Finish time:</b> {{completed.end_time}}<br>
-            <b>Score:</b> {{completed.points}}
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -77,14 +65,7 @@ export default {
         created: "",
         start_time: "",
         finish_time: "",
-        duration: "",
-        completed: false
-      },
-      completed: {
-        start_time: '',
-        end_time: '',
-        points: '',
-        id: null
+        duration: ""
       },
       test: {
         questions: []
@@ -125,7 +106,7 @@ export default {
     async getById(id) {
       this.clearAlerts();
       this.isLoading = true;
-      let res = await this.$store.dispatch("competitions/getByIdWithTest", id);
+      let res = await this.$store.dispatch("publics/getByIdWithTest", id);
       if (res.errors.length < 1) {
         res.errors = await this.start(
           id,
@@ -165,7 +146,7 @@ export default {
           (this.timer.stopTime - Date.now()) / 1000
         );
       } else {
-        res = await this.$store.dispatch("competitions/start", id);
+        res = await this.$store.dispatch("publics/start", id);
         if (res.errors.length < 1) {
           this.timer.stopTime = this.countStopTime(finish_time, duration);
           localStorage.setItem("stopTime", window.btoa(this.timer.stopTime));
@@ -181,7 +162,7 @@ export default {
       this.clearAlerts();
       this.isLoading = true;
       const res = await this.$store.dispatch(
-        "competitions/finish",
+        "publics/finish",
         this.competition.id
       );
       this.isLoading = false;
@@ -194,9 +175,7 @@ export default {
           clearInterval(this.timer.intervalTimer);
           localStorage.removeItem("id");
           localStorage.removeItem("stopTime");
-          this.successes.push(`Your score is ${res.entity.points}`);
-          this.competition.completed = true
-          this.completed = res.entity
+          this.$router.push(`/competitions/${this.competition.id}/results`)
         }
       }
     },
@@ -208,7 +187,7 @@ export default {
       if (!this.isLoading) {
         const title = this.$refs["title"];
         const sticky = title.offsetTop - 50;
-        if (!this.competition.completed && window.pageYOffset > sticky && window.pageYOffset > 50) {
+        if (window.pageYOffset > sticky && window.pageYOffset > 50) {
           this.stickyTitle = true;
           title.classList.add("sticky");
           title.classList.add("container");
@@ -253,14 +232,14 @@ export default {
         });
       }
       if (id) {
-        res = await this.$store.dispatch("competitions/deleteSubmit", {
+        res = await this.$store.dispatch("publics/deleteSubmit", {
           id: this.competition.id,
           answer: id
         });
         if (ansIndex >= 0)
           this.test.questions[qIndex].answers[ansIndex].submit = null;
       } else {
-        res = await this.$store.dispatch("competitions/submit", {
+        res = await this.$store.dispatch("publics/submit", {
           id: this.competition.id,
           question,
           answer

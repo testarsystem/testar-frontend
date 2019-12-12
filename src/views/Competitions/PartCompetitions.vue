@@ -1,7 +1,6 @@
 <template>
-  <div class="my-competitions">
-    <h3>My competitions</h3>
-    <router-link to="/tests/" class="btn" id="newCompetitionBtn">New competition</router-link>
+  <div class="part-competitions">
+    <h3>Participated competitions</h3>
     <Loader v-if="isLoading"/>
     <Alert type="danger" v-for="error in errors" :key="error">{{error}}</Alert>
     <Alert type="success" v-for="success in successes" :key="success">{{success}}</Alert>
@@ -9,11 +8,11 @@
     <CompetitionsCollection 
       :competitions="competitions" 
       v-if="competitions.length > 0 && !isLoading"
-      :isTitleBtnEnabled="isTitleBtnEnabled"
+      btnText="Participate"
+      :isBtnEnabled="isBtnEnabled"
       :isLinkEnabled="isLinkEnabled"
       @linkHandler="linkHandler"
-      @editBtnHandler="editCompetitionBtnHandler"
-      @deleteBtnHandler="deleteCompetitionBtnHandler"
+      @btnHandler="btnHandler"
     />
     <div class="substrate" v-if="competitions.length < 1 && !isLoading">
       Competitions list is empty
@@ -28,7 +27,7 @@ import Loader from '@/components/Loader.vue'
 import Flash from 'js-flash-message'
 
 export default {
-  name: "myCompetitions",
+  name: "participatedCompetitions",
   components: {
     CompetitionsCollection,
     Alert,
@@ -44,14 +43,14 @@ export default {
   },
   computed: {
     competitions() {
-      return this.$store.state.competitions.myCompetitions
+      return this.$store.state.competitions.partCompetitions
     }
   },
   methods: {
     async getCompetitions() {
       this.clearAlerts()
       this.isLoading = true
-      const res = await this.$store.dispatch("competitions/getMyAll")
+      const res = await this.$store.dispatch("competitions/getParticipatedAll")
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
@@ -60,29 +59,21 @@ export default {
     isLinkEnabled() {
       return true
     },
-    linkHandler(id) {
-      this.$router.push(`/competitions/${id}/details`)
-    },
-    isTitleBtnEnabled({start_time}) {
-      return Date.now() < new Date(start_time)
-    },
-    editCompetitionBtnHandler(id) {
-      this.$router.push({path: `/competitions/${id}/edit`, query: { redirect: this.$router.currentRoute.path }})
-    },
-    async deleteCompetitionBtnHandler(id) {
+    btnHandler(competition) {
       this.clearAlerts()
-      const conf = confirm('Are you sure you want to delete this competition?')
-      if(conf == false)
-        return
-      this.isLoading = true
-      const res = await this.$store.dispatch('competitions/delete', id)
-      this.isLoading = false
-      res.errors.forEach(item => {
-        this.errors.push(item.message);
-      });
-      if (res.isSuccess) {
-        this.successes.push('The competition was deleted successfully')
+      if(Date.now() >= new Date(competition.start_time)) {
+        this.$router.push(`/competitions/${competition.id}`)
+      } else {
+        this.warnings.push('The competition hasn\'t started yet!')
+        this.warnings.push(`You can participate it on ${competition.start_time}`)
       }
+    },
+    linkHandler(id) {
+      this.$router.push(`/competitions/${id}/results`)
+    },
+    isBtnEnabled({start_time, finish_time}) {
+      const now = Date.now()
+      return now < new Date(finish_time)
     },
     clearAlerts() {
       this.errors = []

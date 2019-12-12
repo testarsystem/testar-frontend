@@ -32,6 +32,17 @@
           <b>Duration</b>: {{competition.duration}} 
         </div>
       </div> 
+      <div class="content row" v-if="competition.results">
+        <div class="col s12 l4">
+          <b>Start time</b>: {{competition.result.start_time}} 
+        </div>
+        <div class="col s12 l4">
+          <b>Finish time</b>: {{competition.result.end_time}} 
+        </div>
+        <div class="col s12 l4">
+          <b>Duration</b>: {{competition.result.points}} 
+        </div>
+      </div>
       <p class="secondary">
         {{competition.description}}
       </p> 

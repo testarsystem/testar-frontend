@@ -58,6 +58,18 @@ const router = new Router({
       meta: {requiresAuth: true}
     },
     {
+      path: '/participated_competitions',
+      name: 'partCompetitions',
+      component: () => import('./views/Competitions/PartCompetitions.vue'),
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/competitions/:id/results',
+      name: 'competitionResults',
+      component: () => import('./views/Competitions/Results.vue'),
+      meta: {requiresAuth: true}
+    },
+    {
       path: '/my_competitions',
       name: 'myCompetitions',
       component: () => import('./views/Competitions/MyCompetitions.vue'),
