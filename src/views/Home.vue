@@ -60,12 +60,13 @@ export default {
       this.isLoading = true
       console.log(competition.id)
       let res = await this.$store.dispatch("publics/join",competition.id)
-      if(res.errors.length < 1 && Date.now() >= new Date(competition.start_time)) {
-        this.$router.push(`/competitions/${competition.id}`)
-      } else {
-        this.successes.push('You were successfully registrated for this competition')
-        this.successes.push(`You can participate it on ${competition.start_time}`)
-      }       
+      if(res.errors.length < 1)
+        if(Date.now() >= new Date(competition.start_time)) {
+          this.$router.push(`/competitions/${competition.id}`)
+        } else {
+          this.successes.push('You were successfully registrated for this competition')
+          this.successes.push(`You can participate it on ${competition.start_time}`)
+        }       
       this.isLoading = false
       res.errors.forEach(item => {
         this.errors.push(item.message);
